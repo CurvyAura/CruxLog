@@ -24,13 +24,14 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <div className="min-h-screen flex flex-col">
-          <header className="bg-white/60 backdrop-blur sticky top-0 z-20 border-b">
+          {/* Dark grey banner for the app header (mobile-friendly high-contrast) */}
+          <header className="bg-black-400 backdrop-blur sticky top-0 z-20 border-b border-gray-800">
             <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-              <Link href="/" className="font-bold text-lg">CruxLog</Link>
+              <Link href="/" className="font-bold text-lg text-white">CruxLog</Link>
               <nav className="flex items-center gap-4">
-                <Link href="/dashboard" className="hover:underline">Dashboard</Link>
-                <Link href="/problems" className="hover:underline">Problems</Link>
-                <Link href="/sessions/new" className="hover:underline">Log Session</Link>
+                <Link href="/dashboard" className="text-white hover:underline">Dashboard</Link>
+                <Link href="/problems" className="text-white hover:underline">Problems</Link>
+                <Link href="/sessions/new" className="text-white hover:underline">Log Session</Link>
               </nav>
             </div>
           </header>

@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <div className="max-w-3xl mx-auto text-center py-24">
       <h1 className="text-4xl font-bold mb-4">CruxLog</h1>
-  <p className="text-lg text-muted-foreground mb-8">Track your climbing progress. Local-first prototype — data is stored in your browser.</p>
+  <p className="text-lg text-muted-foreground mb-8">Track your climbing progress.</p>
 
       <div className="flex gap-4 justify-center">
         <Link href="/dashboard" className="px-5 py-3 bg-foreground text-background rounded">Open Dashboard</Link>

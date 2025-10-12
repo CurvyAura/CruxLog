@@ -66,19 +66,61 @@ export default function ProblemList() {
           >
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  checked={!!p.completedDate}
-                  onChange={async (e) => {
-                    // Toggle completed state. When checked, set current timestamp; when unchecked, clear it.
-                    const completedDate = e.target.checked ? new Date().toISOString() : null;
+                {/* Accessible toggle button that replaces the native checkbox.
+                    - role="switch" and aria-checked provide screen reader semantics.
+                    - stopPropagation prevents the list-item long-press from also firing.
+                */}
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={!!p.completedDate}
+                  title={p.completedDate ? "Mark as not completed" : "Mark as completed"}
+                  className={
+                    `inline-flex items-center justify-center w-9 h-9 rounded-full transition-colors ` +
+                    (p.completedDate ? "bg-green-600 text-white" : "border bg-white text-gray-700")
+                  }
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    const completedDate = p.completedDate ? null : new Date().toISOString();
                     await put("problems", p.id, { completedDate });
                     setProblems((s) => s.map((x) => (x.id === p.id ? { ...x, completedDate } : x)));
                   }}
-                />
+                >
+                  {p.completedDate ? (
+                    // Check SVG
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-5 h-5">
+                      <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  ) : (
+                    // Plus / empty circle to indicate incomplete (subtle)
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-5 h-5">
+                      <circle cx="12" cy="12" r="9" strokeWidth="2" />
+                    </svg>
+                  )}
+                </button>
                 <div>
                   <div className="font-semibold">{p.name}</div>
-                  <div className="text-sm text-muted-foreground">{p.grade} • {p.area} • {p.completedDate ? new Date(p.completedDate).toLocaleDateString() : "Not completed"}</div>
+                  <div className="text-sm text-muted-foreground">{p.grade} • {p.area}</div>
+                  {p.completedDate ? (
+                    <div className="mt-1 flex items-center gap-2">
+                      <label className="sr-only">Completed date</label>
+                      <input
+                        type="date"
+                        value={new Date(p.completedDate).toISOString().slice(0, 10)}
+                        onClick={(e) => e.stopPropagation()}
+                        onChange={async (e) => {
+                          e.stopPropagation();
+                          const val = e.target.value;
+                          const iso = val ? new Date(val).toISOString() : null;
+                          await put("problems", p.id, { completedDate: iso });
+                          setProblems((s) => s.map((x) => (x.id === p.id ? { ...x, completedDate: iso } : x)));
+                        }}
+                        className="border rounded p-1 text-sm"
+                      />
+                    </div>
+                  ) : (
+                    <div className="text-sm text-muted-foreground mt-1">Not completed</div>
+                  )}
                 </div>
               </div>
             </div>
