@@ -5,12 +5,13 @@ export function makeId(prefix = "i") {
   return `${prefix}_${Math.random().toString(36).slice(2, 9)}`;
 }
 
-export function makeBoulder({ name, grade, area, notes, photoUrl }) {
+export function makeProblem({ name, grade, area, completedDate, notes, photoUrl }) {
   return {
-    id: makeId("boulder"),
+    id: makeId("problem"),
     name: name || "Untitled",
-    grade: grade || "?",
+    grade: grade || "C1",
     area: area || "",
+    completedDate: completedDate || null,
     notes: notes || "",
     photoUrl: photoUrl || null,
     createdAt: new Date().toISOString(),

@@ -4,14 +4,17 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getAll, save } from "../../../lib/storage";
 import { makeSession, makeAttempt } from "../../../lib/schema";
+import { useRouter } from "next/navigation";
 
 export default function NewSession() {
   const [boulders, setBoulders] = useState([]);
   const [selected, setSelected] = useState("");
   const [attempts, setAttempts] = useState([]);
+  const [saved, setSaved] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
-    getAll("boulders").then(setBoulders);
+    getAll("problems").then(setBoulders);
   }, []);
 
   function addAttempt() {
@@ -24,6 +27,10 @@ export default function NewSession() {
     const s = makeSession({ attempts });
     await save("sessions", s);
     setAttempts([]);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+    // navigate back to dashboard so user sees the saved session
+    router.push("/dashboard");
   }
 
   return (
@@ -37,7 +44,7 @@ export default function NewSession() {
 
       <div className="grid gap-4 max-w-md">
         <select value={selected} onChange={(e) => setSelected(e.target.value)} className="border p-2 rounded">
-          <option value="">Select boulder</option>
+          <option value="">Select problem</option>
           {boulders.map((b) => (
             <option key={b.id} value={b.id}>{b.name} — {b.grade}</option>
           ))}
@@ -47,12 +54,17 @@ export default function NewSession() {
           <button onClick={saveSession} className="px-4 py-2 border rounded">Save Session</button>
         </div>
 
+        {saved && <div className="text-sm text-green-400">Session saved.</div>}
+
         <div>
           <h3 className="font-semibold">Attempts</h3>
           <ul className="mt-2 grid gap-2">
-            {attempts.map((a) => (
-              <li key={a.id} className="p-2 border rounded">{a.boulderId} • {a.result}</li>
-            ))}
+            {attempts.map((a) => {
+              const p = boulders.find((b) => b.id === a.boulderId);
+              return (
+                <li key={a.id} className="p-2 border rounded">{p ? p.name : a.boulderId} • {a.result}</li>
+              );
+            })}
           </ul>
         </div>
       </div>

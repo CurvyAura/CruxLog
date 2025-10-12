@@ -1,18 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import BoulderForm from "../../../components/BoulderForm";
+import ProblemForm from "../../../components/ProblemForm";
 
-export default function NewBoulder() {
+export default function NewProblem() {
   return (
     <div className="p-8">
       <header className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Add Boulder</h1>
+        <h1 className="text-2xl font-bold">Add Problem</h1>
         <nav className="flex gap-4">
-          <Link href="/boulders">Back</Link>
+          <Link href="/problems">Back</Link>
         </nav>
       </header>
-      <BoulderForm />
+      <ProblemForm />
     </div>
   );
 }

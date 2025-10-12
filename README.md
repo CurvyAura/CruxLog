@@ -46,9 +46,9 @@ npm install localforage
 ```
 
 - Routes added:
-  - `/dashboard` — add and list boulders
-  - `/boulders` — list boulders
-  - `/boulders/new` — add boulder
+  - `/dashboard` — add and list problems
+  - `/problems` — list problems
+  - `/problems/new` — add problem
   - `/sessions/new` — log a session (add attempts + save)
 
 The data is stored in the browser (IndexedDB). This is intended for quick local iteration and can be migrated to a server-backed store later (Supabase, Postgres, etc.).

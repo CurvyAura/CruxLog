@@ -27,7 +27,7 @@ export default function RootLayout({ children }) {
               <Link href="/" className="font-bold text-lg">CruxLog</Link>
               <nav className="flex items-center gap-4">
                 <Link href="/dashboard" className="hover:underline">Dashboard</Link>
-                <Link href="/boulders" className="hover:underline">Boulders</Link>
+                <Link href="/problems" className="hover:underline">Problems</Link>
                 <Link href="/sessions/new" className="hover:underline">Log Session</Link>
               </nav>
             </div>
