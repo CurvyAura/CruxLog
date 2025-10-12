@@ -41,6 +41,7 @@ export default function SessionList({ limit = null }) {
 
   const longPressRefs = useRef({});
   const [confirm, setConfirm] = useState({ open: false, sessionId: null, attemptId: null });
+  const [editingSession, setEditingSession] = useState({ id: null, value: "" });
 
   // Long-press flow: set a timer to open confirmation dialog instead of immediate delete.
   function startLongPress(sessionId, attemptId) {
@@ -91,7 +92,43 @@ export default function SessionList({ limit = null }) {
         <li key={s.id} className="p-3 border rounded">
           <div className="flex justify-between items-start gap-4">
             <div>
-              <div className="font-semibold">{fmtDate(s.date)}</div>
+              <div className="font-semibold">
+                {editingSession.id === s.id ? (
+                  <input
+                    type="datetime-local"
+                    value={editingSession.value}
+                    onChange={(e) => setEditingSession((p) => ({ ...p, value: e.target.value }))}
+                    onClick={(e) => e.stopPropagation()}
+                    onBlur={async () => {
+                      // Persist the change
+                      try {
+                        const val = editingSession.value;
+                        const iso = val ? new Date(val).toISOString() : new Date().toISOString();
+                        await put("sessions", s.id, { date: iso });
+                        setSessions((ss) => ss.map((x) => (x.id === s.id ? { ...x, date: iso } : x)));
+                        window.dispatchEvent(new CustomEvent("cruxlog:sessions:updated"));
+                      } finally {
+                        setEditingSession({ id: null, value: "" });
+                      }
+                    }}
+                    className="border rounded p-1 text-sm"
+                  />
+                ) : (
+                  <button
+                    type="button"
+                    className="text-left"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      // Prefill datetime-local value
+                      const d = new Date(s.date);
+                      const isoLocal = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+                      setEditingSession({ id: s.id, value: isoLocal });
+                    }}
+                  >
+                    {fmtDate(s.date)}
+                  </button>
+                )}
+              </div>
               {s.location && <div className="text-sm text-muted-foreground">{s.location}</div>}
               {s.notes && <div className="mt-2 text-sm">{s.notes}</div>}
             </div>
