@@ -1,54 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+﻿🪶 CruxLog
 
-## Getting Started
+CruxLog is a modern web app built with Next.js and React for tracking, journaling, and organizing your personal climbing sessions or daily logs.
+It’s designed for simplicity, performance, and a clean user experience.
 
-First, run the development server:
+🚀 Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+🧗‍♂️ Log climbing sessions and track your progress
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+📝 Create, edit, and delete personal entries
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+☁️ Built with Next.js for fast loading and modern routing
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+🎨 Styled with Tailwind CSS for responsive design
 
-## Learn More
+🧰 Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+Framework: Next.js 15
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Frontend: React, TypeScript
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Styling: Tailwind CSS
 
-## Deploy on Vercel
+Deployment: Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Version Control: Git + GitHub
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+🧑‍💻 Getting Started
 
-## Local prototype notes
+1. Clone the repo
+   git clone https://github.com/<your-username>/crux-log.git
+   cd crux-log
 
-This repository now includes a small local prototype for CruxLog:
+2. Install dependencies
+   npm install
 
-- Client-side persistence uses `localforage`. Install it with:
+3. Run the development server
+   npm run dev
 
-```bash
-npm install localforage
-```
+Then visit:
+👉 http://localhost:3000
 
-- Routes added:
-  - `/dashboard` — add and list problems
-  - `/problems` — list problems
-  - `/problems/new` — add problem
-  - `/sessions/new` — log a session (add attempts + save)
+📦 Build for Production
+npm run build
+npm start
 
-The data is stored in the browser (IndexedDB). This is intended for quick local iteration and can be migrated to a server-backed store later (Supabase, Postgres, etc.).
+📁 Project Structure
+crux-log/
+├── app/ # Next.js App Router pages
+├── components/ # UI components
+├── public/ # Static files (images, icons, etc.)
+├── styles/ # Tailwind and global styles
+└── package.json # Dependencies and scripts
+
+🧑‍🎨 Author
+
+Brett Shalagan
+
+🪶 License
+
+This project is licensed under the MIT License
+.
