@@ -1,0 +1,3 @@
+Please run: npm install localforage
+
+This repo change requires adding localforage to dependencies.
