@@ -4,16 +4,23 @@ import { useState } from "react";
 import { save } from "../lib/storage";
 import { makeProblem } from "../lib/schema";
 
+/**
+ * ProblemForm
+ * - Renders a small form to create a new Problem and persist it locally.
+ * - onSaved callback is called with the new problem after successful save.
+ */
 export default function ProblemForm({ onSaved }) {
   const [name, setName] = useState("");
   const [grade, setGrade] = useState("");
   const [area, setArea] = useState("");
   const [completedDate, setCompletedDate] = useState("");
 
+  // Submit handler: create a Problem object and persist it using the storage helper.
   async function submit(e) {
     e.preventDefault();
     const p = makeProblem({ name, grade, area, completedDate });
     await save("problems", p);
+    // Reset form fields
     setName("");
     setGrade("");
     setArea("");

@@ -1,5 +1,9 @@
 import Link from "next/link";
 
+/**
+ * Landing page for the prototype. Keeps instructions minimal and points
+ * to the Dashboard and Problems pages.
+ */
 export default function Home() {
   return (
     <div className="max-w-3xl mx-auto text-center py-24">

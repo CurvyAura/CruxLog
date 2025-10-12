@@ -1,3 +1,5 @@
+// Root layout for the Next.js app. Provides global fonts, header navigation,
+// and the main layout container used by all pages.
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import "./globals.css";
@@ -33,6 +35,7 @@ export default function RootLayout({ children }) {
             </div>
           </header>
 
+          {/* Main content area where page children are rendered */}
           <main className="flex-1 max-w-6xl mx-auto px-4 py-8">{children}</main>
 
           <footer className="border-t">

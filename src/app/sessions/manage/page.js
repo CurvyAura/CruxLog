@@ -5,6 +5,11 @@ import Link from "next/link";
 import { getAll, remove, put } from "../../../lib/storage";
 import ConfirmDialog from "../../../components/ConfirmDialog";
 
+/**
+ * ManageSessions page
+ * - Lists saved sessions and allows deleting sessions or toggling attempt results.
+ * - Delete shows a confirmation dialog before performing the destructive action.
+ */
 export default function ManageSessions() {
   const [sessions, setSessions] = useState([]);
   const [confirmDelete, setConfirmDelete] = useState({ open: false, sessionId: null });
@@ -24,6 +29,7 @@ export default function ManageSessions() {
     setConfirmDelete({ open: false, sessionId: null });
   }
 
+  // Toggle between 'send' and 'fail' for an attempt and persist the session.
   async function toggleAttemptResult(sessionId, attemptId) {
     const session = sessions.find((s) => s.id === sessionId);
     if (!session) return;

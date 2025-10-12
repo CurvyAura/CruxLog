@@ -3,6 +3,7 @@
 import Link from "next/link";
 import ProblemList from "../../components/ProblemList";
 
+// Dedicated Problems page showing the full list and allowing edits/deletes
 export default function ProblemsPage() {
   return (
     <div className="p-8">

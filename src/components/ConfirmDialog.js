@@ -1,5 +1,14 @@
 "use client";
 
+/**
+ * Reusable confirmation dialog used for destructive actions.
+ * Props:
+ * - open: boolean whether to show the dialog
+ * - title: dialog title
+ * - message: explanatory message
+ * - onConfirm: callback invoked when user confirms
+ * - onCancel: callback invoked when user cancels
+ */
 export default function ConfirmDialog({ open, title, message, onConfirm, onCancel }) {
   if (!open) return null;
   return (

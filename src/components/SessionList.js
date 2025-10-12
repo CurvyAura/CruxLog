@@ -5,6 +5,7 @@ import { getAll, put, remove } from "../lib/storage";
 import ConfirmDialog from "./ConfirmDialog";
 import ResultBadge from "./ResultBadge";
 
+// Format session date for display with locale-sensitive formatting.
 function fmtDate(iso) {
   try {
     return new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(new Date(iso));
@@ -13,10 +14,17 @@ function fmtDate(iso) {
   }
 }
 
+/**
+ * SessionList
+ * - Loads sessions and problems and displays recent sessions.
+ * - Provides long-press deletion for individual attempts; if a session loses
+ *   all attempts it's removed entirely.
+ */
 export default function SessionList() {
   const [sessions, setSessions] = useState([]);
   const [problems, setProblems] = useState([]);
 
+  // Load sessions and problems on mount.
   useEffect(() => {
     let mounted = true;
     Promise.all([getAll("sessions"), getAll("problems")]).then(([slist, plist]) => {
@@ -27,11 +35,13 @@ export default function SessionList() {
     return () => (mounted = false);
   }, []);
 
+  // Small helper to find a problem by id to show its name in attempts list.
   const findProblem = (id) => problems.find((p) => p.id === id);
 
   const longPressRefs = useRef({});
   const [confirm, setConfirm] = useState({ open: false, sessionId: null, attemptId: null });
 
+  // Long-press flow: set a timer to open confirmation dialog instead of immediate delete.
   function startLongPress(sessionId, attemptId) {
     const key = `${sessionId}:${attemptId}`;
     clearTimeout(longPressRefs.current[key]);
@@ -46,6 +56,8 @@ export default function SessionList() {
     clearTimeout(longPressRefs.current[key]);
   }
 
+  // When deletion is confirmed, either remove the attempt or remove the whole session
+  // if no attempts remain.
   function handleConfirmDelete() {
     const { sessionId, attemptId } = confirm;
     const session = sessions.find((s) => s.id === sessionId);

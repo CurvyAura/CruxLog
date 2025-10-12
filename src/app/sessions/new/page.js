@@ -7,6 +7,12 @@ import { makeSession, makeAttempt } from "../../../lib/schema";
 import { useRouter } from "next/navigation";
 import ResultBadge from "../../../components/ResultBadge";
 
+/**
+ * NewSession page
+ * - Lets the user pick problems and add attempts for a session.
+ * - Attempts are accumulated locally in component state and then saved
+ *   as a Session object into local storage.
+ */
 export default function NewSession() {
   const [problems, setProblems] = useState([]);
   const [selected, setSelected] = useState("");

@@ -1,5 +1,10 @@
 "use client";
 
+/**
+ * Small visual badge that represents an attempt result.
+ * Props:
+ * - result: 'send' | 'fail' | 'attempt'
+ */
 export default function ResultBadge({ result }) {
   const base = "inline-flex items-center px-2 py-0.5 rounded text-xs font-medium";
   if (result === "send") return <span className={`${base} bg-green-600 text-white`}>Send</span>;

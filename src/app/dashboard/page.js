@@ -5,6 +5,11 @@ import ProblemForm from "../../components/ProblemForm";
 import ProblemList from "../../components/ProblemList";
 import SessionList from "../../components/SessionList";
 
+/**
+ * Dashboard: add problems and view recent sessions.
+ * The Recent Problems panel is intentionally commented out to keep the
+ * dashboard focused; use /problems for a dedicated problems view.
+ */
 export default function Dashboard() {
   return (
     <div className="p-8">

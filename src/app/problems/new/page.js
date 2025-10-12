@@ -3,6 +3,7 @@
 import Link from "next/link";
 import ProblemForm from "../../../components/ProblemForm";
 
+// Simple page used to add a new problem (uses ProblemForm)
 export default function NewProblem() {
   return (
     <div className="p-8">
