@@ -4,6 +4,7 @@ import Link from "next/link";
 import ProblemForm from "../../components/ProblemForm";
 import ProblemList from "../../components/ProblemList";
 import SessionList from "../../components/SessionList";
+import InsightsChart from "../../components/InsightsChart";
 
 /**
  * Dashboard: add problems and view recent sessions.
@@ -18,7 +19,7 @@ export default function Dashboard() {
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="p-4 border rounded">
           <h2 className="font-semibold mb-2">Progress Insights</h2>
-          <p className="text-sm text-muted-foreground">Summary of sends, attempts and recent progress will appear here.</p>
+          <InsightsChart />
         </div>
         <div className="p-4 border rounded">
           <h2 className="font-semibold mb-2">Recent Problems</h2>

@@ -68,11 +68,15 @@ export default function SessionList({ limit = null }) {
       // remove entire session
       remove("sessions", sessionId).then(() => {
         setSessions((ss) => ss.filter((x) => x.id !== sessionId));
+        // notify other components that sessions changed
+        window.dispatchEvent(new CustomEvent("cruxlog:sessions:updated"));
         setConfirm({ open: false, sessionId: null, attemptId: null });
       });
     } else {
       put("sessions", sessionId, { attempts }).then(() => {
         setSessions((ss) => ss.map((x) => (x.id === sessionId ? { ...x, attempts } : x)));
+        // notify other components that sessions changed
+        window.dispatchEvent(new CustomEvent("cruxlog:sessions:updated"));
         setConfirm({ open: false, sessionId: null, attemptId: null });
       });
     }
