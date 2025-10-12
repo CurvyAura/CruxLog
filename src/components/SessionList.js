@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getAll } from "../lib/storage";
+import { useEffect, useState, useRef } from "react";
+import { getAll, put, remove } from "../lib/storage";
+import ConfirmDialog from "./ConfirmDialog";
 import ResultBadge from "./ResultBadge";
 
 function fmtDate(iso) {
@@ -28,9 +29,46 @@ export default function SessionList() {
 
   const findProblem = (id) => problems.find((p) => p.id === id);
 
+  const longPressRefs = useRef({});
+  const [confirm, setConfirm] = useState({ open: false, sessionId: null, attemptId: null });
+
+  function startLongPress(sessionId, attemptId) {
+    const key = `${sessionId}:${attemptId}`;
+    clearTimeout(longPressRefs.current[key]);
+    longPressRefs.current[key] = setTimeout(() => {
+      // open confirm dialog instead of immediate delete
+      setConfirm({ open: true, sessionId, attemptId });
+    }, 700);
+  }
+
+  function cancelLongPress(sessionId, attemptId) {
+    const key = `${sessionId}:${attemptId}`;
+    clearTimeout(longPressRefs.current[key]);
+  }
+
+  function handleConfirmDelete() {
+    const { sessionId, attemptId } = confirm;
+    const session = sessions.find((s) => s.id === sessionId);
+    if (!session) return setConfirm({ open: false, sessionId: null, attemptId: null });
+    const attempts = (session.attempts || []).filter((a) => a.id !== attemptId);
+    if (!attempts.length) {
+      // remove entire session
+      remove("sessions", sessionId).then(() => {
+        setSessions((ss) => ss.filter((x) => x.id !== sessionId));
+        setConfirm({ open: false, sessionId: null, attemptId: null });
+      });
+    } else {
+      put("sessions", sessionId, { attempts }).then(() => {
+        setSessions((ss) => ss.map((x) => (x.id === sessionId ? { ...x, attempts } : x)));
+        setConfirm({ open: false, sessionId: null, attemptId: null });
+      });
+    }
+  }
+
   if (!sessions.length) return <p className="text-sm text-muted-foreground">No sessions yet.</p>;
 
   return (
+    <>
     <ul className="grid gap-3">
       {sessions.map((s) => (
         <li key={s.id} className="p-3 border rounded">
@@ -46,7 +84,15 @@ export default function SessionList() {
                 {(s.attempts || []).map((a) => {
                   const p = findProblem(a.problemId);
                   return (
-                    <li key={a.id} className="mt-1 flex items-center gap-2">
+                    <li
+                      key={a.id}
+                      className="mt-1 flex items-center gap-2"
+                      onMouseDown={() => startLongPress(s.id, a.id)}
+                      onMouseUp={() => cancelLongPress(s.id, a.id)}
+                      onMouseLeave={() => cancelLongPress(s.id, a.id)}
+                      onTouchStart={() => startLongPress(s.id, a.id)}
+                      onTouchEnd={() => cancelLongPress(s.id, a.id)}
+                    >
                       <span className="font-semibold">{p ? p.name : a.problemId}</span>
                       <ResultBadge result={a.result} />
                     </li>
@@ -58,5 +104,13 @@ export default function SessionList() {
         </li>
       ))}
     </ul>
+      <ConfirmDialog
+        open={confirm.open}
+        title="Delete attempt"
+        message="Are you sure you want to delete this attempt? If this was the only attempt in the session the entire session will be removed."
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setConfirm({ open: false, sessionId: null, attemptId: null })}
+      />
+    </>
   );
 }

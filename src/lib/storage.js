@@ -32,3 +32,8 @@ export async function put(kind, id, patch) {
 export async function clearKind(kind) {
   await localforage.removeItem(key(kind));
 }
+
+export async function remove(kind, id) {
+  const items = (await getAll(kind)).filter((it) => it.id !== id);
+  await localforage.setItem(key(kind), items);
+}

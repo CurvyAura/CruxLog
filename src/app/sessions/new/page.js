@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import ResultBadge from "../../../components/ResultBadge";
 
 export default function NewSession() {
-  const [boulders, setBoulders] = useState([]);
+  const [problems, setProblems] = useState([]);
   const [selected, setSelected] = useState("");
   const [result, setResult] = useState("send");
   const [attempts, setAttempts] = useState([]);
@@ -16,7 +16,7 @@ export default function NewSession() {
   const router = useRouter();
 
   useEffect(() => {
-    getAll("problems").then(setBoulders);
+    getAll("problems").then(setProblems);
   }, []);
 
   function addAttempt() {
@@ -47,7 +47,7 @@ export default function NewSession() {
       <div className="grid gap-4 max-w-md">
         <select value={selected} onChange={(e) => setSelected(e.target.value)} className="border p-2 rounded">
           <option value="">Select problem</option>
-          {boulders.map((b) => (
+          {problems.map((b) => (
             <option key={b.id} value={b.id}>{b.name} — {b.grade}</option>
           ))}
         </select>
@@ -67,7 +67,7 @@ export default function NewSession() {
           <h3 className="font-semibold">Attempts</h3>
           <ul className="mt-2 grid gap-2">
             {attempts.map((a, idx) => {
-              const p = boulders.find((b) => b.id === a.problemId);
+              const p = problems.find((b) => b.id === a.problemId);
               return (
                 <li key={a.id} className="p-2 border rounded flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3">

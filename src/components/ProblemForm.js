@@ -45,7 +45,7 @@ export default function ProblemForm({ onSaved }) {
         type="date"
         value={completedDate}
         onChange={(e) => setCompletedDate(e.target.value)}
-        className="border p-2 rounded"
+        className="border p-2 rounded text-muted-foreground placeholder:text-muted-foreground"
         aria-label="Completed date"
       />
       <div className="flex gap-2">

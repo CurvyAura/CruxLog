@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "CruxLog",
-  description: "Track bouldering progress",
+  description: "Track climbing progress",
 };
 
 export default function RootLayout({ children }) {
