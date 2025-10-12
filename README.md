@@ -27,15 +27,7 @@ Version Control: Git + GitHub
 
 🧑‍💻 Getting Started
 
-1. Clone the repo
-   git clone https://github.com/<your-username>/crux-log.git
-   cd crux-log
-
-2. Install dependencies
-   npm install
-
-3. Run the development server
-   npm run dev
+1. Visit the link under About!
 
 Then visit:
 👉 http://localhost:3000
