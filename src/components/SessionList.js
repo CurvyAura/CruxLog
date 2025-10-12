@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getAll } from "../lib/storage";
+import ResultBadge from "./ResultBadge";
 
 function fmtDate(iso) {
   try {
@@ -43,11 +44,11 @@ export default function SessionList() {
               <div className="font-medium">Attempts</div>
               <ul className="mt-1">
                 {(s.attempts || []).map((a) => {
-                  const p = findProblem(a.boulderId);
+                  const p = findProblem(a.problemId);
                   return (
-                    <li key={a.id} className="mt-1">
-                      <span className="font-semibold">{p ? p.name : a.boulderId}</span>
-                      <span className="text-muted-foreground"> — {a.result}</span>
+                    <li key={a.id} className="mt-1 flex items-center gap-2">
+                      <span className="font-semibold">{p ? p.name : a.problemId}</span>
+                      <ResultBadge result={a.result} />
                     </li>
                   );
                 })}

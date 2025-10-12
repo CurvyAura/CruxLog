@@ -31,10 +31,10 @@ export function makeSession({ date, location, notes, attempts = [] }) {
   };
 }
 
-export function makeAttempt({ boulderId, result = "attempt", notes = "" }) {
+export function makeAttempt({ problemId, result = "attempt", notes = "" }) {
   return {
     id: makeId("attempt"),
-    boulderId,
+    problemId,
     result,
     notes,
     timestamp: new Date().toISOString(),

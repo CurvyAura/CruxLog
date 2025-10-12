@@ -9,8 +9,8 @@ export default function ProblemsPage() {
       <header className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Problems</h1>
         <nav className="flex gap-4">
-          <Link href="/dashboard">Dashboard</Link>
-          <Link href="/problems/new">Add</Link>
+          {/* <Link href="/dashboard">Dashboard</Link>
+          <Link href="/problems/new">Add</Link> */}
         </nav>
       </header>
 
