@@ -17,17 +17,17 @@ export default function Dashboard() {
 
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="p-4 border rounded">
-          <h2 className="font-semibold mb-2">Add Problem</h2>
-          <ProblemForm />
+          <h2 className="font-semibold mb-2">Progress Insights</h2>
+          <p className="text-sm text-muted-foreground">Summary of sends, attempts and recent progress will appear here.</p>
         </div>
-        {/* <div className="p-4 border rounded">
+        <div className="p-4 border rounded">
           <h2 className="font-semibold mb-2">Recent Problems</h2>
-          <ProblemList />
-        </div> */}
+          <ProblemList limit={5} />
+        </div>
       </section>
       <section className="mt-8 p-4 border rounded">
         <h2 className="font-semibold mb-2">Recent Sessions</h2>
-        <SessionList />
+        <SessionList limit={5} />
       </section>
     </div>
   );

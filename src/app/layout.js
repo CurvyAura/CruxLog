@@ -31,7 +31,7 @@ export default function RootLayout({ children }) {
               <nav className="flex items-center gap-4">
                 <Link href="/dashboard" className="text-white hover:underline">Dashboard</Link>
                 <Link href="/problems" className="text-white hover:underline">Problems</Link>
-                <Link href="/sessions/new" className="text-white hover:underline">Log Session</Link>
+                <Link href="/sessions" className="text-white hover:underline">Sessions</Link>
               </nav>
             </div>
           </header>

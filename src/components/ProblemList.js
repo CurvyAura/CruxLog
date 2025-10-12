@@ -10,19 +10,37 @@ import ConfirmDialog from "./ConfirmDialog";
  * - Supports long-press to confirm deletion (mobile-friendly).
  * - Provides a completed checkbox which sets/clears `completedDate` via `put`.
  */
-export default function ProblemList() {
+export default function ProblemList({ limit = null, refreshKey = null }) {
   const [problems, setProblems] = useState([]);
   const [confirm, setConfirm] = useState({ open: false, problemId: null });
   const longPressRefs = useRef({});
 
   // Load problems once on mount. Reverse so newest appear first.
+  // Load problems on mount and when refreshKey changes. Reverse so newest appear first.
   useEffect(() => {
     let mounted = true;
     getAll("problems").then((list) => {
-      if (mounted) setProblems(list.reverse());
+      if (!mounted) return;
+      const ordered = (list || []).slice().sort((a, b) => (new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
+      setProblems(limit && Number.isInteger(limit) ? ordered.slice(0, limit) : ordered);
     });
-    return () => (mounted = false);
-  }, []);
+
+    // Also listen for global updates so other components can trigger a refresh
+    function onUpdated() {
+      getAll("problems").then((list) => {
+        if (!mounted) return;
+        const ordered = (list || []).slice().sort((a, b) => (new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()));
+        setProblems(limit && Number.isInteger(limit) ? ordered.slice(0, limit) : ordered);
+      });
+    }
+
+    window.addEventListener("cruxlog:problems:updated", onUpdated);
+
+    return () => {
+      mounted = false;
+      window.removeEventListener("cruxlog:problems:updated", onUpdated);
+    };
+  }, [limit, refreshKey]);
 
   // Long-press helpers: start a timer on pointer down and clear on up/leave.
   function startLongPress(id) {

@@ -45,9 +45,6 @@ export default function NewSession() {
     <div className="p-8">
       <header className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Log Session</h1>
-        <nav className="flex gap-4">
-          <Link href="/dashboard">Dashboard</Link>
-        </nav>
       </header>
 
       <div className="grid gap-4 max-w-md">

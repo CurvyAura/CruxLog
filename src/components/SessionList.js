@@ -20,7 +20,7 @@ function fmtDate(iso) {
  * - Provides long-press deletion for individual attempts; if a session loses
  *   all attempts it's removed entirely.
  */
-export default function SessionList() {
+export default function SessionList({ limit = null }) {
   const [sessions, setSessions] = useState([]);
   const [problems, setProblems] = useState([]);
 
@@ -29,11 +29,12 @@ export default function SessionList() {
     let mounted = true;
     Promise.all([getAll("sessions"), getAll("problems")]).then(([slist, plist]) => {
       if (!mounted) return;
-      setSessions((slist || []).slice().reverse());
+      const ordered = (slist || []).slice().sort((a, b) => (new Date(b.date).getTime() - new Date(a.date).getTime()));
+      setSessions(limit && Number.isInteger(limit) ? ordered.slice(0, limit) : ordered);
       setProblems(plist || []);
     });
     return () => (mounted = false);
-  }, []);
+  }, [limit]);
 
   // Small helper to find a problem by id to show its name in attempts list.
   const findProblem = (id) => problems.find((p) => p.id === id);
@@ -98,15 +99,17 @@ export default function SessionList() {
                   return (
                     <li
                       key={a.id}
-                      className="mt-1 flex items-center gap-2"
+                      className="mt-1 flex items-center justify-between"
                       onMouseDown={() => startLongPress(s.id, a.id)}
                       onMouseUp={() => cancelLongPress(s.id, a.id)}
                       onMouseLeave={() => cancelLongPress(s.id, a.id)}
                       onTouchStart={() => startLongPress(s.id, a.id)}
                       onTouchEnd={() => cancelLongPress(s.id, a.id)}
                     >
-                      <span className="font-semibold">{p ? p.name : a.problemId}</span>
-                      <ResultBadge result={a.result} />
+                      <span className="font-semibold flex-1 min-w-0 truncate">{p ? p.name : a.problemId}</span>
+                      <div className="ml-3 flex-shrink-0">
+                        <ResultBadge result={a.result} />
+                      </div>
                     </li>
                   );
                 })}

@@ -26,6 +26,12 @@ export default function ProblemForm({ onSaved }) {
     setArea("");
     setCompletedDate("");
     if (onSaved) onSaved(p);
+    // Broadcast a global event so lists across pages can refresh immediately
+    try {
+      window.dispatchEvent(new CustomEvent("cruxlog:problems:updated", { detail: p }));
+    } catch (err) {
+      // ignore (server-side rendering won't have window)
+    }
   }
 
   return (
