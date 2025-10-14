@@ -44,8 +44,6 @@ crux-log/
 ├── styles/ # Tailwind and global styles
 └── package.json # Dependencies and scripts
 
-📸 Gallery
-
 🧑‍🎨 Author
 
 Brett Shalagan
