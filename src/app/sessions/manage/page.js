@@ -12,10 +12,12 @@ import ConfirmDialog from "../../../components/ConfirmDialog";
  */
 export default function ManageSessions() {
   const [sessions, setSessions] = useState([]);
+  const [problems, setProblems] = useState([]);
   const [confirmDelete, setConfirmDelete] = useState({ open: false, sessionId: null });
 
   useEffect(() => {
     getAll("sessions").then((s) => setSessions((s || []).slice().reverse()));
+    getAll("problems").then((p) => setProblems(p || []));
   }, []);
 
   async function deleteSession(id) {
@@ -65,12 +67,16 @@ export default function ManageSessions() {
                 {s.location && <div className="text-sm text-muted-foreground">{s.location}</div>}
                 <div className="mt-2 text-sm">Attempts:</div>
                 <ul className="ml-4 mt-1 text-sm">
-                  {s.attempts.map((a) => (
-                    <li key={a.id} className="flex items-center gap-3">
-                      <span>{a.result}</span>
-                      <button onClick={() => toggleAttemptResult(s.id, a.id)} className="text-xs px-2 py-1 border rounded">Toggle</button>
-                    </li>
-                  ))}
+                  {s.attempts.map((a) => {
+                      const prob = problems.find((b) => b.id === a.problemId);
+                      return (
+                        <li key={a.id} className="flex items-center gap-3">
+                          <span className="font-medium">{prob ? `${prob.name} (${prob.grade})` : a.problemId}</span>
+                          <span className="text-sm text-muted-foreground">{a.result}</span>
+                          <button onClick={() => toggleAttemptResult(s.id, a.id)} className="text-xs px-2 py-1 border rounded">Toggle</button>
+                        </li>
+                      );
+                    })}
                 </ul>
               </div>
               <div className="flex flex-col gap-2">

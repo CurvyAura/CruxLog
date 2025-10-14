@@ -12,6 +12,7 @@ import ConfirmDialog from "./ConfirmDialog";
  */
 export default function ProblemList({ limit = null, refreshKey = null }) {
   const [problems, setProblems] = useState([]);
+  const [gradePrefix, setGradePrefix] = useState("C");
   const [confirm, setConfirm] = useState({ open: false, problemId: null });
   const longPressRefs = useRef({});
 
@@ -35,6 +36,14 @@ export default function ProblemList({ limit = null, refreshKey = null }) {
     }
 
     window.addEventListener("cruxlog:problems:updated", onUpdated);
+
+    // load app setting for grade prefix
+    import("../lib/storage").then(({ getSetting }) => {
+      getSetting("gradePrefix", "C").then((v) => {
+        if (!mounted) return;
+        setGradePrefix(v || "C");
+      });
+    });
 
     return () => {
       mounted = false;

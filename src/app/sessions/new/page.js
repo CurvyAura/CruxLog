@@ -15,6 +15,7 @@ import ResultBadge from "../../../components/ResultBadge";
  */
 export default function NewSession() {
   const [problems, setProblems] = useState([]);
+  const [gradePrefix, setGradePrefix] = useState("C");
   const [selected, setSelected] = useState("");
   const [result, setResult] = useState("send");
   const [attempts, setAttempts] = useState([]);
@@ -23,6 +24,14 @@ export default function NewSession() {
 
   useEffect(() => {
     getAll("problems").then(setProblems);
+    let mounted = true;
+    import("../../../lib/storage").then(({ getSetting }) => {
+      getSetting("gradePrefix", "C").then((v) => {
+        if (!mounted) return;
+        setGradePrefix(v || "C");
+      });
+    });
+    return () => (mounted = false);
   }, []);
 
   function addAttempt() {
@@ -75,8 +84,9 @@ export default function NewSession() {
                 <li key={a.id} className="p-2 border rounded flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
                     <div className="min-w-40">
-                      <div className="font-semibold">{p ? p.name : a.problemId}</div>
-                      <div className="text-sm text-muted-foreground">{p ? p.grade : ""}</div>
+                      <div className="font-semibold">
+                        {p ? p.name : a.problemId} {p && <span className="text-sm text-muted-foreground">({p.grade})</span>}
+                      </div>
                     </div>
                     <ResultBadge result={a.result} />
                   </div>

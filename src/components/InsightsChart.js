@@ -6,7 +6,8 @@ import { getAll } from "../lib/storage";
 // Map grades like 'C1'..'C9' to numeric values 1..9. Falls back to null for unknowns.
 function gradeToNumber(g) {
   if (!g || typeof g !== "string") return null;
-  const m = g.match(/C(\d+)/i);
+  // Extract any numeric portion from the grade string (supports C1..C9, V0..V16, etc.)
+  const m = g.match(/(\d+)/);
   if (!m) return null;
   const n = Number(m[1]);
   return Number.isFinite(n) ? n : null;
@@ -14,13 +15,16 @@ function gradeToNumber(g) {
 
 // Compute average numeric grade for a session by looking up the problems referenced in attempts
 // and averaging their grade numbers. Sessions without numeric-grade attempts are filtered out.
-function computeSessionAverages(sessions, problemsById) {
+function computeSessionAverages(sessions, problemsById, gradePrefix = null) {
   return sessions
     .map((s) => {
       const vals = (s.attempts || [])
         .map((a) => {
           const p = problemsById[a.problemId];
-          return p ? gradeToNumber(p.grade) : null;
+          // If a gradePrefix is specified, only consider problems matching that prefix
+          if (!p) return null;
+          if (gradePrefix && !(p.grade && String(p.grade).startsWith(gradePrefix))) return null;
+          return gradeToNumber(p.grade);
         })
         .filter((v) => v != null);
       if (!vals.length) return null;
@@ -36,6 +40,7 @@ export default function InsightsChart({ width = 600, height = 160 }) {
   const [data, setData] = useState([]);
   const [range, setRange] = useState("30d"); // options: 7d, 30d, 1y, all
   const [selectedIdx, setSelectedIdx] = useState(null); // index of clicked/tapped point
+  const [gradePrefix, setGradePrefix] = useState("C");
 
   useEffect(() => {
     let mounted = true;
@@ -44,7 +49,7 @@ export default function InsightsChart({ width = 600, height = 160 }) {
       const [slist, plist] = await Promise.all([getAll("sessions"), getAll("problems")]);
       if (!mounted) return;
       const problemsById = (plist || []).reduce((acc, p) => ((acc[p.id] = p), acc), {});
-      const points = computeSessionAverages(slist || [], problemsById);
+      const points = computeSessionAverages(slist || [], problemsById, gradePrefix);
       setData(points);
     }
 
@@ -60,10 +65,22 @@ export default function InsightsChart({ width = 600, height = 160 }) {
       mounted = false;
       window.removeEventListener("cruxlog:sessions:updated", onUpdated);
     };
+  }, [gradePrefix]);
+
+  // Load gradePrefix setting so labels/axes use the user's chosen system
+  useEffect(() => {
+    let mounted = true;
+    import("../lib/storage").then(({ getSetting }) => {
+      getSetting("gradePrefix", "C").then((v) => {
+        if (!mounted) return;
+        setGradePrefix(v || "C");
+      });
+    });
+    return () => (mounted = false);
   }, []);
 
   if (!data.length) {
-    return <p className="text-sm text-muted-foreground">Not enough graded attempts yet to chart.</p>;
+    return <p className="text-sm text-muted-foreground">No graded attempts for {gradePrefix} grades yet.</p>;
   }
 
   // filter data by selected range
@@ -112,8 +129,10 @@ export default function InsightsChart({ width = 600, height = 160 }) {
   const avgs = filtered.map((d) => d.avg);
   const minDate = Math.min(...dates);
   const maxDate = Math.max(...dates);
-  const minY = Math.max(1, Math.floor(Math.min(...avgs) - 0.5));
-  const maxY = Math.min(9, Math.ceil(Math.max(...avgs) + 0.5));
+  // Determine sensible axis bounds depending on grade prefix system
+  const prefixRange = gradePrefix === "V" ? { min: 0, max: 16 } : { min: 1, max: 9 };
+  const minY = Math.max(prefixRange.min, Math.floor(Math.min(...avgs) - 0.5));
+  const maxY = Math.min(prefixRange.max, Math.ceil(Math.max(...avgs) + 0.5));
 
   const xFor = (t) => ((t - minDate) / (maxDate - minDate || 1)) * innerW + leftPad;
   const yFor = (v) => (topPad + innerH - ((v - minY) / (maxY - minY || 1)) * innerH);
@@ -153,7 +172,7 @@ export default function InsightsChart({ width = 600, height = 160 }) {
           return (
             <g key={i}>
               <line x1={leftPad} x2={width - rightPad} y1={y} y2={y} stroke="#2b2b2b" strokeOpacity="0.12" />
-              <text x={leftPad - 8} y={y + 4} fontSize="10" fill="#9ca3af" textAnchor="end">{`C${yVal}`}</text>
+              <text x={leftPad - 8} y={y + 4} fontSize="10" fill="#9ca3af" textAnchor="end">{`${gradePrefix}${yVal}`}</text>
             </g>
           );
         })}
@@ -205,7 +224,7 @@ export default function InsightsChart({ width = 600, height = 160 }) {
         })()}
       </svg>
       <div className="mt-2 text-xs text-muted-foreground">
-        <span className="font-medium">Avg grade</span> over time (C1 low → C9 high)
+        <span className="font-medium">Avg grade</span> over time ({`${gradePrefix}${prefixRange.min} low → ${gradePrefix}${prefixRange.max} high`})
       </div>
     </div>
   );

@@ -14,6 +14,12 @@ function fmtDate(iso) {
   }
 }
 
+// Small helper to truncate long problem names to a consistent length.
+function truncateText(s, max = 28) {
+  if (!s) return s;
+  return s.length > max ? s.slice(0, max - 1) + "…" : s;
+}
+
 /**
  * SessionList
  * - Loads sessions and problems and displays recent sessions.
@@ -132,7 +138,7 @@ export default function SessionList({ limit = null }) {
               {s.location && <div className="text-sm text-muted-foreground">{s.location}</div>}
               {s.notes && <div className="mt-2 text-sm">{s.notes}</div>}
             </div>
-            <div className="text-sm">
+            <div className="text-sm w-64 flex-shrink-0">
               <div className="font-medium">Attempts</div>
               <ul className="mt-1">
                 {(s.attempts || []).map((a) => {
@@ -140,17 +146,20 @@ export default function SessionList({ limit = null }) {
                   return (
                     <li
                       key={a.id}
-                      className="mt-1 flex items-center justify-between"
+                        className="mt-1 flex items-center justify-between gap-2"
                       onMouseDown={() => startLongPress(s.id, a.id)}
                       onMouseUp={() => cancelLongPress(s.id, a.id)}
                       onMouseLeave={() => cancelLongPress(s.id, a.id)}
                       onTouchStart={() => startLongPress(s.id, a.id)}
                       onTouchEnd={() => cancelLongPress(s.id, a.id)}
                     >
-                      <span className="font-semibold flex-1 min-w-0 truncate">{p ? p.name : a.problemId}</span>
-                      <div className="ml-3 flex-shrink-0">
-                        <ResultBadge result={a.result} />
-                      </div>
+                        <span className="font-semibold flex-1 min-w-0 truncate" title={p ? p.name : a.problemId}>
+                          {p ? truncateText(p.name, 28) : a.problemId}
+                          {p && <span className="text-sm text-muted-foreground"> ({p.grade})</span>}
+                        </span>
+                        <div className="ml-3 flex-shrink-0 w-16 flex justify-end">
+                          <ResultBadge result={a.result} />
+                        </div>
                     </li>
                   );
                 })}

@@ -27,6 +27,28 @@ export async function getAll(kind) {
 }
 
 /**
+ * Get a single app setting by name. Settings are stored as an object under the 'settings' key.
+ * @param {string} name
+ * @param {any} defaultValue
+ */
+export async function getSetting(name, defaultValue = null) {
+  const map = (await localforage.getItem(key("settings"))) || {};
+  return map[name] !== undefined ? map[name] : defaultValue;
+}
+
+/**
+ * Persist a single app setting under the 'settings' key.
+ * @param {string} name
+ * @param {any} value
+ */
+export async function setSetting(name, value) {
+  const map = (await localforage.getItem(key("settings"))) || {};
+  map[name] = value;
+  await localforage.setItem(key("settings"), map);
+  return map;
+}
+
+/**
  * Save a new item for a kind. The item is appended to the stored array.
  * Returns the saved item.
  *

@@ -35,7 +35,7 @@ export default function RootLayout({ children }) {
                 <Link href="/problems" className="text-foreground hover:underline">Problems</Link>
                 <Link href="/sessions" className="text-foreground hover:underline">Sessions</Link>
                 <Link href="/settings" aria-label="Settings" className="text-foreground hover:opacity-80 ml-4">
-                  <svg fill="#ffffff" height="20" width="20" version="1.1" id="Capa_1" viewBox="0 0 54 54" stroke="#ffffff" xmlns="http://www.w3.org/2000/svg">
+                  <svg fill="currentColor" height="20" width="20" version="1.1" id="Capa_1" viewBox="0 0 54 54" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
                     <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
                     <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
                     <g id="SVGRepo_iconCarrier">

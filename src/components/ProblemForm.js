@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { save } from "../lib/storage";
 import { makeProblem } from "../lib/schema";
 
@@ -14,6 +14,18 @@ export default function ProblemForm({ onSaved }) {
   const [grade, setGrade] = useState("");
   const [area, setArea] = useState("");
   const [completedDate, setCompletedDate] = useState("");
+  const [gradePrefix, setGradePrefix] = useState("C");
+
+  useEffect(() => {
+    let mounted = true;
+    import("../lib/storage").then(({ getSetting }) => {
+      getSetting("gradePrefix", "C").then((v) => {
+        if (!mounted) return;
+        setGradePrefix(v || "C");
+      });
+    });
+    return () => (mounted = false);
+  }, []);
 
   // Submit handler: create a Problem object and persist it using the storage helper.
   async function submit(e) {
@@ -43,7 +55,7 @@ export default function ProblemForm({ onSaved }) {
         className="border p-2 rounded"
       />
       <input
-        placeholder="Grade (C1 - C9)"
+        placeholder={`Grade (${gradePrefix}1 - ${gradePrefix}9)`}
         value={grade}
         onChange={(e) => setGrade(e.target.value)}
         className="border p-2 rounded"
