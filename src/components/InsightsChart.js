@@ -29,7 +29,8 @@ function computeSessionAverages(sessions, problemsById, gradePrefix = null) {
         .filter((v) => v != null);
       if (!vals.length) return null;
       const avg = vals.reduce((sum, v) => sum + v, 0) / vals.length;
-      return { date: s.date, avg };
+      const max = Math.max(...vals);
+      return { date: s.date, avg, max };
     })
     .filter((x) => x && Number.isFinite(x.avg))
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
@@ -93,6 +94,10 @@ export default function InsightsChart({ width = 600, height = 160 }) {
   };
   const cutoff = range === "all" ? -Infinity : now - ranges[range];
   const filtered = data.filter((d) => new Date(d.date).getTime() >= cutoff);
+  // compute highest grade (numeric) among filtered sessions (if any)
+  const highestNumeric = filtered.length ? Math.max(...filtered.map((d) => (d.max != null ? d.max : -Infinity))) : null;
+  const highestDisplay = highestNumeric != null && Number.isFinite(highestNumeric) && highestNumeric !== -Infinity ? `${gradePrefix}${highestNumeric}` : "—";
+
   if (!filtered.length) {
     return (
       <div>
@@ -108,7 +113,7 @@ export default function InsightsChart({ width = 600, height = 160 }) {
             </button>
           ))}
           </div>
-          <div className="text-sm text-muted-foreground">Sessions: 0</div>
+          <div className="text-sm text-muted-foreground">Sessions: 0 • Highest: {highestDisplay}</div>
         </div>
         <p className="text-sm text-muted-foreground">No sessions in this range.</p>
       </div>
@@ -162,7 +167,7 @@ export default function InsightsChart({ width = 600, height = 160 }) {
             </button>
           ))}
         </div>
-        <div className="text-sm text-muted-foreground">Sessions: {sessionCount}</div>
+        <div className="text-sm text-muted-foreground">Sessions: {sessionCount} • Highest: {highestDisplay}</div>
       </div>
       <svg viewBox={`0 0 ${width} ${height}`} width="100%" height={height} preserveAspectRatio="xMidYMid meet">
         {/* grid lines and y-axis labels */}
