@@ -96,7 +96,7 @@ export default function SessionList({ limit = null }) {
     <ul className="grid gap-3">
       {sessions.map((s) => (
         <li key={s.id} className="p-3 border rounded">
-          <div className="flex justify-between items-start gap-4">
+          <div className="flex flex-col md:flex-row md:justify-between items-start gap-4">
             <div>
               <div className="font-semibold">
                 {editingSession.id === s.id ? (
@@ -138,7 +138,7 @@ export default function SessionList({ limit = null }) {
               {s.location && <div className="text-sm text-muted-foreground">{s.location}</div>}
               {s.notes && <div className="mt-2 text-sm">{s.notes}</div>}
             </div>
-            <div className="text-sm w-64 flex-shrink-0">
+            <div className="text-sm w-full md:w-72 flex-shrink-0">
               <div className="font-medium">Attempts</div>
               <ul className="mt-1">
                 {(s.attempts || []).map((a) => {

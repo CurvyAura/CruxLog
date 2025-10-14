@@ -51,19 +51,19 @@ export default function NewSession() {
   }
 
   return (
-    <div className="max-w-lg py-8">
+  <div className="w-full max-w-xl py-8">
       <header className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Log Session</h1>
       </header>
 
-      <div className="grid gap-4 max-w-md">
-        <select value={selected} onChange={(e) => setSelected(e.target.value)} className="border p-2 rounded">
+      <div className="grid gap-4">
+        <select value={selected} onChange={(e) => setSelected(e.target.value)} className="border p-2 rounded w-full">
           <option value="">Select problem</option>
           {problems.map((b) => (
             <option key={b.id} value={b.id}>{b.name} — {b.grade}</option>
           ))}
         </select>
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-2 items-center flex-wrap">
           <select value={result} onChange={(e) => setResult(e.target.value)} className="border p-2 rounded">
             <option value="send">Send</option>
             <option value="fail">Fail</option>

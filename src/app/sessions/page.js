@@ -10,8 +10,7 @@ export default function SessionsIndex() {
       <header className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Sessions</h1>
       </header>
-
-      <section className="grid gap-8">
+      <section className="grid gap-8 md:grid-cols-2">
         <div className="p-4 border rounded">
           <h2 className="font-semibold mb-2"></h2>
           <NewSession />

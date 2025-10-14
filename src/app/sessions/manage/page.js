@@ -61,7 +61,7 @@ export default function ManageSessions() {
       <ul className="grid gap-3">
         {sessions.map((s) => (
           <li key={s.id} className="p-3 border rounded">
-            <div className="flex justify-between items-start">
+            <div className="flex flex-col md:flex-row md:justify-between items-start gap-3">
               <div>
                 <div className="font-semibold">{new Date(s.date).toLocaleString()}</div>
                 {s.location && <div className="text-sm text-muted-foreground">{s.location}</div>}
@@ -71,7 +71,7 @@ export default function ManageSessions() {
                       const prob = problems.find((b) => b.id === a.problemId);
                       return (
                         <li key={a.id} className="flex items-center gap-3">
-                          <span className="font-medium">{prob ? `${prob.name} (${prob.grade})` : a.problemId}</span>
+                          <span className="font-medium truncate max-w-xs">{prob ? `${prob.name} (${prob.grade})` : a.problemId}</span>
                           <span className="text-sm text-muted-foreground">{a.result}</span>
                           <button onClick={() => toggleAttemptResult(s.id, a.id)} className="text-xs px-2 py-1 border rounded">Toggle</button>
                         </li>
@@ -79,7 +79,7 @@ export default function ManageSessions() {
                     })}
                 </ul>
               </div>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 md:items-end w-full md:w-auto">
                 <button onClick={() => deleteSession(s.id)} className="px-3 py-1 border rounded text-sm">Delete</button>
               </div>
             </div>
