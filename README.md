@@ -46,8 +46,6 @@ crux-log/
 
 📸 Gallery
 
-
-
 🧑‍🎨 Author
 
 Brett Shalagan

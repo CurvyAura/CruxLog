@@ -39,7 +39,7 @@ export default function ManageSessions() {
   }
 
   if (!sessions.length) return (
-    <div className="p-8">
+    <div className=" max-w-6xl">
       <h1 className="text-2xl font-bold mb-4">Manage Sessions</h1>
       <p className="text-sm text-muted-foreground">No sessions to manage.</p>
       <Link href="/dashboard" className="mt-4 inline-block">Back</Link>

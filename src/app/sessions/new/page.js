@@ -42,7 +42,7 @@ export default function NewSession() {
   }
 
   return (
-    <div className="p-8">
+    <div className="max-w-lg py-8">
       <header className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Log Session</h1>
       </header>

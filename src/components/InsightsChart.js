@@ -35,6 +35,7 @@ function computeSessionAverages(sessions, problemsById) {
 export default function InsightsChart({ width = 600, height = 160 }) {
   const [data, setData] = useState([]);
   const [range, setRange] = useState("30d"); // options: 7d, 30d, 1y, all
+  const [selectedIdx, setSelectedIdx] = useState(null); // index of clicked/tapped point
 
   useEffect(() => {
     let mounted = true;
@@ -163,20 +164,45 @@ export default function InsightsChart({ width = 600, height = 160 }) {
         {/* points */}
 
         {filtered.map((d, i) => (
-          <circle key={i} cx={xFor(new Date(d.date).getTime())} cy={yFor(d.avg)} r={3} fill="#10b981" />
+          <circle
+            key={i}
+            cx={xFor(new Date(d.date).getTime())}
+            cy={yFor(d.avg)}
+            r={4}
+            fill="#10b981"
+            style={{ cursor: "pointer" }}
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedIdx(i === selectedIdx ? null : i);
+            }}
+            onTouchStart={(e) => {
+              e.stopPropagation();
+              setSelectedIdx(i === selectedIdx ? null : i);
+            }}
+          />
         ))}
-
-        {/* x-axis ticks */}
-        {xTicks.map((tk, i) => {
-          const x = xFor(tk.t);
-          const axisY = topPad + innerH; // baseline for x-axis
+        {/* tooltip for selected point (shown on click/tap) */}
+        {selectedIdx != null && filtered[selectedIdx] && (() => {
+          const d = filtered[selectedIdx];
+          const px = xFor(new Date(d.date).getTime());
+          const py = yFor(d.avg);
+          const label = new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", year: "numeric" }).format(new Date(d.date));
+          const pad = 6;
+          // clamp tooltip inside chart area
+          const tx = Math.max(leftPad + pad, Math.min(width - rightPad - pad - 80, px - 40));
+          const ty = Math.max(topPad + 8, py - 28);
+          const rectW = 90;
+          const rectH = 20;
           return (
-            <g key={i}>
-              <line x1={x} x2={x} y1={axisY + 4} y2={axisY + 8} stroke="#6b7280" strokeOpacity="0.5" />
-              <text x={x} y={axisY + 20} fontSize="10" fill="#9ca3af" textAnchor="middle">{tk.label}</text>
+            <g>
+              <line x1={px} x2={px} y1={py} y2={topPad + innerH} stroke="#6b7280" strokeOpacity="0.2" strokeDasharray="2 2" />
+              <g transform={`translate(${tx}, ${ty})`}>
+                <rect x={0} y={0} rx={6} ry={6} width={rectW} height={rectH} fill="#111827" fillOpacity={0.95} />
+                <text x={rectW / 2} y={rectH / 2 + 4} fontSize="11" fill="#fff" textAnchor="middle">{label}</text>
+              </g>
             </g>
           );
-        })}
+        })()}
       </svg>
       <div className="mt-2 text-xs text-muted-foreground">
         <span className="font-medium">Avg grade</span> over time (C1 low → C9 high)

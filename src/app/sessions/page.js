@@ -6,7 +6,7 @@ import SessionList from "../../components/SessionList";
 
 export default function SessionsIndex() {
   return (
-    <div className="p-8">
+    <div className="p-4">
       <header className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">Sessions</h1>
       </header>
