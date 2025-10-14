@@ -27,9 +27,9 @@ export default function RootLayout({ children }) {
         <ThemeProviderWrapper>
           <div className="min-h-screen flex flex-col">
           {/* Dark grey banner for the app header (mobile-friendly high-contrast) */}
-            <header className="bg-gray-800 backdrop-blur sticky top-0 z-20 border-b border-gray-700">
+            <header className="site-banner backdrop-blur sticky top-0 z-20 border-b">
               <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-                <Link href="/" className="font-bold text-lg text-white">CruxLog</Link>
+                <Link href="/" className="font-bold text-lg text-foreground">CruxLog</Link>
               <nav className="flex items-center gap-4">
                 <Link href="/dashboard" className="text-foreground hover:underline">Dashboard</Link>
                 <Link href="/problems" className="text-foreground hover:underline">Problems</Link>
