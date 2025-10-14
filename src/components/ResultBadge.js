@@ -1,13 +1,9 @@
 "use client";
 
-/**
- * Small visual badge that represents an attempt result.
- * Props:
- * - result: 'send' | 'fail' | 'attempt'
- */
+import Badge from "./ui/Badge";
+
 export default function ResultBadge({ result }) {
-  const base = "inline-flex items-center px-2 py-0.5 rounded text-xs font-medium";
-  if (result === "send") return <span className={`${base} bg-green-600 text-white`}>Send</span>;
-  if (result === "fail") return <span className={`${base} bg-red-600 text-white`}>Fail</span>;
-  return <span className={`${base} bg-gray-600 text-white`}>Attempt</span>;
+  if (result === "send") return <Badge tone="success">Send</Badge>;
+  if (result === "fail") return <Badge tone="danger">Fail</Badge>;
+  return <Badge tone="muted">Attempt</Badge>;
 }

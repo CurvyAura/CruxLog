@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getAll, remove, put } from "../../../lib/storage";
 import ConfirmDialog from "../../../components/ConfirmDialog";
+import Button from "../../../components/ui/Button";
 
 /**
  * ManageSessions page
@@ -73,14 +74,14 @@ export default function ManageSessions() {
                         <li key={a.id} className="flex items-center gap-3">
                           <span className="font-medium truncate max-w-xs">{prob ? `${prob.name} (${prob.grade})` : a.problemId}</span>
                           <span className="text-sm text-muted-foreground">{a.result}</span>
-                          <button onClick={() => toggleAttemptResult(s.id, a.id)} className="text-xs px-2 py-1 border rounded">Toggle</button>
+                          <Button variant="ghost" onClick={() => toggleAttemptResult(s.id, a.id)} className="text-xs px-2 py-1">Toggle</Button>
                         </li>
                       );
                     })}
                 </ul>
               </div>
               <div className="flex flex-col gap-2 md:items-end w-full md:w-auto">
-                <button onClick={() => deleteSession(s.id)} className="px-3 py-1 border rounded text-sm">Delete</button>
+                <Button variant="ghost" onClick={() => deleteSession(s.id)} className="px-3 py-1 text-sm">Delete</Button>
               </div>
             </div>
           </li>

@@ -1,22 +1,20 @@
 import Link from "next/link";
+import Button from "../components/ui/Button";
 
-/**
- * Landing page for the prototype. Keeps instructions minimal and points
- * to the Dashboard and Problems pages.
- */
 export default function Home() {
   return (
-    <div className="max-w-3xl mx-auto text-center py-24">
-      <h1 className="text-4xl font-bold mb-4">CruxLog</h1>
-  <p className="text-lg text-muted-foreground mb-8">Track your climbing progress.</p>
+    <div className="max-w-4xl mx-auto py-20 px-4">
+      <section className="text-center mb-10">
+        <h1 className="text-5xl font-extrabold mb-3">CruxLog</h1>
+        <p className="text-lg text-muted mb-6">Track your climbing progress with simple, local-first tools.</p>
+        <div className="flex justify-center gap-4">
+          <Link href="/dashboard"><Button>Open Dashboard</Button></Link>
+          <Link href="/problems"><Button variant="ghost">View Problems</Button></Link>
+        </div>
+      </section>
 
-      <div className="flex gap-4 justify-center">
-        <Link href="/dashboard" className="px-5 py-3 bg-foreground text-background rounded">Open Dashboard</Link>
-  <Link href="/problems" className="px-5 py-3 border rounded">View Problems</Link>
-      </div>
-
-      <section className="mt-12 text-sm text-muted-foreground">
-  <p>Quick start: add a problem, then go to Log Session to add attempts.</p>
+      <section className="text-center text-sm text-muted">
+        <p>Quick start: add a problem, then go to Log Session to add attempts.</p>
       </section>
     </div>
   );

@@ -3,6 +3,8 @@
 import { useEffect, useState, useRef } from "react";
 import { getAll, remove, put } from "../lib/storage";
 import ConfirmDialog from "./ConfirmDialog";
+import Button from "./ui/Button";
+import Input from "./ui/Input";
 
 /**
  * ProblemList
@@ -75,16 +77,16 @@ export default function ProblemList({ limit = null, refreshKey = null }) {
   }
 
   if (!problems.length) {
-    return <p className="text-sm text-muted-foreground">No problems yet.</p>;
+    return <p className="text-sm muted">No problems yet.</p>;
   }
 
   return (
     <>
-      <ul className="grid gap-2">
+      <ul className="grid gap-3">
         {problems.map((p) => (
           <li
             key={p.id}
-            className="p-3 border rounded"
+            className="card p-3"
             onMouseDown={() => startLongPress(p.id)}
             onMouseUp={() => cancelLongPress(p.id)}
             onMouseLeave={() => cancelLongPress(p.id)}
@@ -114,20 +116,14 @@ export default function ProblemList({ limit = null, refreshKey = null }) {
                   }}
                 >
                   {p.completedDate ? (
-                    // Check SVG
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-5 h-5">
-                      <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
+                    <span className="sr-only">Completed</span>
                   ) : (
-                    // Plus / empty circle to indicate incomplete (subtle)
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-5 h-5">
-                      <circle cx="12" cy="12" r="9" strokeWidth="2" />
-                    </svg>
+                    <span className="sr-only">Not completed</span>
                   )}
                 </button>
                 <div>
                   <div className="font-semibold">{p.name}</div>
-                  <div className="text-sm text-muted-foreground">{p.grade} • {p.area}</div>
+                  <div className="text-sm muted">{p.grade} • {p.area}</div>
                   {p.completedDate ? (
                     <div className="mt-1 flex items-center gap-2">
                       <label className="sr-only">Completed date</label>
@@ -146,7 +142,7 @@ export default function ProblemList({ limit = null, refreshKey = null }) {
                       />
                     </div>
                   ) : (
-                    <div className="text-sm text-muted-foreground mt-1">Not completed</div>
+                      <div className="text-sm muted mt-1">Not completed</div>
                   )}
                 </div>
               </div>

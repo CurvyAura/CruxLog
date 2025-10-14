@@ -1,47 +1,128 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Shopify-like design tokens (light theme) */
+  --bg: #ffffff;
+  --surface: #f6f6f7;
+  --muted: #9b9b9b;
+  --text: #0b1220;
+  --primary: #0b6e4f; /* a green similar to Shopify primary */
+  --primary-contrast: #ffffff;
+  --danger: #b00020;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --shadow-sm: 0 1px 2px rgba(12,15,20,0.04);
+  --shadow-md: 0 6px 12px rgba(12,15,20,0.08);
+  --border: #e6e9ee;
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 12px;
+  --space-lg: 20px;
+  --elevation-1: 0 1px 3px rgba(12,15,20,0.06);
+  --elevation-2: 0 8px 20px rgba(12,15,20,0.08);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-/* Theme overrides when ThemeProvider sets data-theme on <html> */
-html[data-theme="light"] {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/* Dark theme tokens */
 html[data-theme="dark"] {
-  --background: #0a0a0a;
-  --foreground: #ededed;
+  --bg: #071017;
+  --surface: #0f1720;
+  --muted: #8b98a6;
+  --text: #e6eef6;
+  --primary: #18a673;
+  --primary-contrast: #06211a;
+  --danger: #ff6b6b;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --shadow-sm: 0 1px 2px rgba(2,6,12,0.6);
+  --shadow-md: 0 6px 12px rgba(2,6,12,0.6);
+  --border: #15202b;
 }
+
+/* prefers-color-scheme handled via ThemeProvider/data-theme; keep media rule out to avoid empty rules */
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
 }
 
 /* Utility to use theme foreground color in Tailwind-like classes */
 .text-foreground {
-  color: var(--foreground) !important;
+  color: var(--text) !important;
 }
 
-/* Header background (keeps contrast in both themes) */
-.app-header {
-  background-color: rgba(0,0,0,0.6);
+/* Card surface */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
 }
+
+/* Form controls */
+.control {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  padding: 8px 6px;
+  border-radius: 0;
+  color: var(--text);
+  transition: box-shadow 200ms ease, border-color 160ms ease, transform 120ms ease;
+}
+
+.control:focus {
+  outline: none;
+  border-bottom-color: var(--primary);
+  box-shadow: 0 2px 8px rgba(11,110,79,0.06);
+  transform: translateY(-1px);
+}
+
+/* Primary button */
+.btn-primary {
+  background: var(--primary);
+  color: var(--primary-contrast);
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm) var(--space-md);
+  box-shadow: var(--elevation-1);
+  transition: transform 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: var(--radius-sm);
+  padding: var(--space-xs) var(--space-sm);
+}
+
+.btn-destructive {
+  background: var(--danger);
+  color: white;
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm) var(--space-md);
+}
+
+.btn-primary:hover { transform: translateY(-3px); box-shadow: var(--elevation-2); }
+.btn-ghost:hover { background: rgba(0,0,0,0.02); }
+.btn-destructive:hover { opacity: 0.92; transform: translateY(-2px); }
+
+/* subtle entrance and dialog animations */
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+
+.fade-in-up { animation: fadeInUp 220ms cubic-bezier(.2,.9,.3,1) both; }
+.scale-in { animation: scaleIn 180ms cubic-bezier(.2,.9,.3,1) both; }
+
+/* Dialog content wrapper (used by ui/Dialog) */
+.dialog-content {
+  background: var(--surface);
+  color: var(--text);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  box-shadow: var(--shadow-md);
+  transform-origin: center;
+  animation: scaleIn 180ms ease;
+}
+
+/* Small helper for muted text */
+.muted { color: var(--muted); }
