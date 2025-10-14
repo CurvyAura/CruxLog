@@ -99,28 +99,26 @@ export default function ProblemList({ limit = null, refreshKey = null }) {
                     - role="switch" and aria-checked provide screen reader semantics.
                     - stopPropagation prevents the list-item long-press from also firing.
                 */}
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={!!p.completedDate}
+                <label
+                  className={`switch ${p.completedDate ? "checked" : ""}`}
                   title={p.completedDate ? "Mark as not completed" : "Mark as completed"}
-                  className={
-                    `inline-flex items-center justify-center w-9 h-9 rounded-full transition-colors ` +
-                    (p.completedDate ? "bg-green-600 text-white" : "border bg-white text-gray-700")
-                  }
-                  onClick={async (e) => {
-                    e.stopPropagation();
-                    const completedDate = p.completedDate ? null : new Date().toISOString();
-                    await put("problems", p.id, { completedDate });
-                    setProblems((s) => s.map((x) => (x.id === p.id ? { ...x, completedDate } : x)));
-                  }}
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  {p.completedDate ? (
-                    <span className="sr-only">Completed</span>
-                  ) : (
-                    <span className="sr-only">Not completed</span>
-                  )}
-                </button>
+                  <input
+                    type="checkbox"
+                    checked={!!p.completedDate}
+                    onChange={async (e) => {
+                      e.stopPropagation();
+                      const completedDate = e.target.checked ? new Date().toISOString() : null;
+                      await put("problems", p.id, { completedDate });
+                      setProblems((s) => s.map((x) => (x.id === p.id ? { ...x, completedDate } : x)));
+                    }}
+                    aria-label={p.completedDate ? "Mark as not completed" : "Mark as completed"}
+                  />
+                  <span className="switch-track">
+                    <span className="switch-thumb" />
+                  </span>
+                </label>
                 <div>
                   <div className="font-semibold">{p.name}</div>
                   <div className="text-sm muted">{p.grade} • {p.area}</div>

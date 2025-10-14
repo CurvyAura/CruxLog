@@ -77,11 +77,77 @@ body {
   transform: translateY(-1px);
 }
 
+/* Select-specific boxed appearance */
+.select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: linear-gradient(180deg, rgba(0,0,0,0.02), transparent), transparent;
+  border: 1px solid var(--border);
+  padding: 8px 36px 8px 12px; /* room for chevron */
+  border-radius: var(--radius-sm);
+}
+
+/* custom arrow: uses a pseudo element on the select's container, but since select cannot have pseudo we rely on background svg via data URL */
+.select {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'><path d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px 8px;
+}
+
+/* Options readability */
+select option { color: var(--text); background: var(--bg); }
+select option:disabled { color: var(--muted); }
+
+/* Toggle switch */
+.switch {
+  --track-width: 44px;
+  --track-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+.switch-track {
+  width: var(--track-width);
+  height: var(--track-height);
+  background: linear-gradient(180deg, rgba(0,0,0,0.03), transparent);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--track-height) / 2);
+  position: relative;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+.switch-thumb {
+  width: 18px;
+  height: 18px;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 4px;
+  transform: translateY(-50%);
+  box-shadow: var(--elevation-1);
+  transition: left 160ms cubic-bezier(.2,.9,.3,1), background 160ms ease, transform 120ms ease;
+}
+.switch.checked .switch-track { background: linear-gradient(180deg, rgba(11,110,79,0.15), rgba(11,110,79,0.06)); border-color: rgba(11,110,79,0.5); }
+.switch.checked .switch-thumb { left: calc(var(--track-width) - 22px); background: var(--primary); }
+.switch input { position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0; }
+
 /* Primary button */
+/* Base button sizing to keep all variants consistent */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+
 .btn-primary {
   background: var(--primary);
   color: var(--primary-contrast);
-  border-radius: var(--radius-sm);
   padding: var(--space-sm) var(--space-md);
   box-shadow: var(--elevation-1);
   transition: transform 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
@@ -91,8 +157,8 @@ body {
   background: transparent;
   border: 1px solid var(--border);
   color: var(--text);
-  border-radius: var(--radius-sm);
-  padding: var(--space-xs) var(--space-sm);
+  /* match primary padding so sizes align */
+  padding: var(--space-sm) var(--space-md);
 }
 
 .btn-destructive {
