@@ -96,3 +96,15 @@ export async function remove(kind, id) {
   const items = (await getAll(kind)).filter((it) => it.id !== id);
   await localforage.setItem(key(kind), items);
 }
+
+/**
+ * Clear all app data: problems, sessions and settings.
+ * Used by a user-facing "reset account data" action.
+ */
+export async function clearAll() {
+  await Promise.all([
+    localforage.removeItem(key("problems")),
+    localforage.removeItem(key("sessions")),
+    localforage.removeItem(key("settings")),
+  ]);
+}
