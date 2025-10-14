@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { getAll, put, remove } from "../lib/storage";
 import ConfirmDialog from "./ConfirmDialog";
 import ResultBadge from "./ResultBadge";
+import Button from "./ui/Button";
 
 // Format session date for display with locale-sensitive formatting.
 function fmtDate(iso) {
@@ -89,13 +90,13 @@ export default function SessionList({ limit = null }) {
     }
   }
 
-  if (!sessions.length) return <p className="text-sm text-muted-foreground">No sessions yet.</p>;
+  if (!sessions.length) return <p className="text-sm muted">No sessions yet.</p>;
 
   return (
     <>
-    <ul className="grid gap-3">
+    <ul className="grid gap-4">
       {sessions.map((s) => (
-        <li key={s.id} className="p-3 border rounded">
+        <li key={s.id} className="card p-3">
           <div className="flex flex-col md:flex-row md:justify-between items-start gap-4">
             <div>
               <div className="font-semibold">
@@ -135,7 +136,7 @@ export default function SessionList({ limit = null }) {
                   </button>
                 )}
               </div>
-              {s.location && <div className="text-sm text-muted-foreground">{s.location}</div>}
+              {s.location && <div className="text-sm muted">{s.location}</div>}
               {s.notes && <div className="mt-2 text-sm">{s.notes}</div>}
             </div>
             <div className="text-sm w-full md:w-72 flex-shrink-0">

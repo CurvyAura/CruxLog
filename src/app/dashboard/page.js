@@ -13,21 +13,20 @@ import InsightsChart from "../../components/InsightsChart";
  */
 export default function Dashboard() {
   return (
-    <div className="p-8">
-      {/* Header removed — global header provides title and navigation */}
-
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="p-4 border rounded">
-          <h2 className="font-semibold mb-2">Progress Insights</h2>
+    <div className="p-6 max-w-6xl mx-auto">
+      <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="card p-4 lg:col-span-2">
+          <h2 className="font-semibold mb-3">Progress Insights</h2>
           <InsightsChart />
         </div>
-        <div className="p-4 border rounded">
-          <h2 className="font-semibold mb-2">Recent Problems</h2>
+        <div className="card p-4">
+          <h2 className="font-semibold mb-3">Recent Problems</h2>
           <ProblemList limit={5} />
         </div>
       </section>
-      <section className="mt-8 p-4 border rounded">
-        <h2 className="font-semibold mb-2">Recent Sessions</h2>
+
+      <section className="mt-6 card p-4">
+        <h2 className="font-semibold mb-3">Recent Sessions</h2>
         <SessionList limit={5} />
       </section>
     </div>

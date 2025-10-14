@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getAll } from "../lib/storage";
+import Button from "./ui/Button";
 
 // Map grades like 'C1'..'C9' to numeric values 1..9. Falls back to null for unknowns.
 function gradeToNumber(g) {
@@ -104,13 +105,9 @@ export default function InsightsChart({ width = 600, height = 160 }) {
         <div className="flex items-center justify-between gap-2 mb-2">
           <div className="flex gap-2">
           {[("7d"), ("30d"), ("1y"), ("all")].map((r) => (
-            <button
-              key={r}
-              onClick={() => setRange(r)}
-              className={`px-2 py-1 text-xs rounded ${range === r ? "bg-gray-800 text-white" : "bg-transparent text-muted-foreground border"}`}
-            >
+            <Button key={r} className="text-xs px-2 py-1" variant={range === r ? "default" : "ghost"} onClick={() => setRange(r)}>
               {r === "7d" ? "Last 7d" : r === "30d" ? "Last 30d" : r === "1y" ? "Last year" : "All"}
-            </button>
+            </Button>
           ))}
           </div>
           <div className="text-sm text-muted-foreground">Sessions: 0 • Highest: {highestDisplay}</div>

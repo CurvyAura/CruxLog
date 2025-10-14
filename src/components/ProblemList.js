@@ -3,6 +3,8 @@
 import { useEffect, useState, useRef } from "react";
 import { getAll, remove, put } from "../lib/storage";
 import ConfirmDialog from "./ConfirmDialog";
+import Button from "./ui/Button";
+import Input from "./ui/Input";
 
 /**
  * ProblemList
@@ -75,16 +77,16 @@ export default function ProblemList({ limit = null, refreshKey = null }) {
   }
 
   if (!problems.length) {
-    return <p className="text-sm text-muted-foreground">No problems yet.</p>;
+    return <p className="text-sm muted">No problems yet.</p>;
   }
 
   return (
     <>
-      <ul className="grid gap-2">
+      <ul className="grid gap-3">
         {problems.map((p) => (
           <li
             key={p.id}
-            className="p-3 border rounded"
+            className="card p-3"
             onMouseDown={() => startLongPress(p.id)}
             onMouseUp={() => cancelLongPress(p.id)}
             onMouseLeave={() => cancelLongPress(p.id)}
@@ -97,37 +99,29 @@ export default function ProblemList({ limit = null, refreshKey = null }) {
                     - role="switch" and aria-checked provide screen reader semantics.
                     - stopPropagation prevents the list-item long-press from also firing.
                 */}
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={!!p.completedDate}
+                <label
+                  className={`switch ${p.completedDate ? "checked" : ""}`}
                   title={p.completedDate ? "Mark as not completed" : "Mark as completed"}
-                  className={
-                    `inline-flex items-center justify-center w-9 h-9 rounded-full transition-colors ` +
-                    (p.completedDate ? "bg-green-600 text-white" : "border bg-white text-gray-700")
-                  }
-                  onClick={async (e) => {
-                    e.stopPropagation();
-                    const completedDate = p.completedDate ? null : new Date().toISOString();
-                    await put("problems", p.id, { completedDate });
-                    setProblems((s) => s.map((x) => (x.id === p.id ? { ...x, completedDate } : x)));
-                  }}
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  {p.completedDate ? (
-                    // Check SVG
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-5 h-5">
-                      <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  ) : (
-                    // Plus / empty circle to indicate incomplete (subtle)
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-5 h-5">
-                      <circle cx="12" cy="12" r="9" strokeWidth="2" />
-                    </svg>
-                  )}
-                </button>
+                  <input
+                    type="checkbox"
+                    checked={!!p.completedDate}
+                    onChange={async (e) => {
+                      e.stopPropagation();
+                      const completedDate = e.target.checked ? new Date().toISOString() : null;
+                      await put("problems", p.id, { completedDate });
+                      setProblems((s) => s.map((x) => (x.id === p.id ? { ...x, completedDate } : x)));
+                    }}
+                    aria-label={p.completedDate ? "Mark as not completed" : "Mark as completed"}
+                  />
+                  <span className="switch-track">
+                    <span className="switch-thumb" />
+                  </span>
+                </label>
                 <div>
                   <div className="font-semibold">{p.name}</div>
-                  <div className="text-sm text-muted-foreground">{p.grade} • {p.area}</div>
+                  <div className="text-sm muted">{p.grade} • {p.area}</div>
                   {p.completedDate ? (
                     <div className="mt-1 flex items-center gap-2">
                       <label className="sr-only">Completed date</label>
@@ -146,7 +140,7 @@ export default function ProblemList({ limit = null, refreshKey = null }) {
                       />
                     </div>
                   ) : (
-                    <div className="text-sm text-muted-foreground mt-1">Not completed</div>
+                      <div className="text-sm muted mt-1">Not completed</div>
                   )}
                 </div>
               </div>

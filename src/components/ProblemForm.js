@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import { save } from "../lib/storage";
 import { makeProblem } from "../lib/schema";
-
+import Input from "./ui/Input";
+import Button from "./ui/Button";
 /**
  * ProblemForm
  * - Renders a small form to create a new Problem and persist it locally.
@@ -48,33 +49,12 @@ export default function ProblemForm({ onSaved }) {
 
   return (
     <form onSubmit={submit} className="grid gap-2">
-      <input
-        placeholder="Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        className="border p-2 rounded"
-      />
-      <input
-        placeholder={`Grade (${gradePrefix}1 - ${gradePrefix}9)`}
-        value={grade}
-        onChange={(e) => setGrade(e.target.value)}
-        className="border p-2 rounded"
-      />
-      <input
-        placeholder="Area / Gym"
-        value={area}
-        onChange={(e) => setArea(e.target.value)}
-        className="border p-2 rounded"
-      />
-      <input
-        type="date"
-        value={completedDate}
-        onChange={(e) => setCompletedDate(e.target.value)}
-        className="border p-2 rounded text-muted-foreground placeholder:text-muted-foreground"
-        aria-label="Completed date"
-      />
+      <Input placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
+      <Input placeholder={`Grade (${gradePrefix}1 - ${gradePrefix}9)`} value={grade} onChange={(e) => setGrade(e.target.value)} />
+      <Input placeholder="Area / Gym" value={area} onChange={(e) => setArea(e.target.value)} />
+      <Input type="date" value={completedDate} onChange={(e) => setCompletedDate(e.target.value)} aria-label="Completed date" />
       <div className="flex gap-2">
-        <button className="px-4 py-2 bg-foreground text-background rounded">Add Problem</button>
+        <Button>Add Problem</Button>
       </div>
     </form>
   );
