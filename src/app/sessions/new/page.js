@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { getAll, save, put, getSetting, setSetting } from "../../../lib/storage";
 import Select from "../../../components/ui/Select";
@@ -23,6 +23,12 @@ export default function NewSession() {
   const [attempts, setAttempts] = useState([]);
   const [saved, setSaved] = useState(false);
   const router = useRouter();
+  const [query, setQuery] = useState("");
+  const [open, setOpen] = useState(false);
+  const [filteredProblems, setFilteredProblems] = useState([]);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const inputRef = useRef(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     getAll("problems").then(setProblems);
@@ -43,6 +49,32 @@ export default function NewSession() {
     });
     return () => (mounted = false);
   }, []);
+
+  // Update filtered problems when query or problems list changes
+  useEffect(() => {
+    const q = (query || "").trim().toLowerCase();
+    if (!q) {
+      setFilteredProblems(problems.slice(0, 50));
+      setActiveIndex(0);
+      return;
+    }
+    const matches = problems.filter((p) => (p.name || "").toLowerCase().includes(q) || (p.grade || "").toLowerCase().includes(q));
+    setFilteredProblems(matches.slice(0, 50));
+    setActiveIndex(0);
+  }, [query, problems]);
+
+  // Close dropdown when clicking outside the picker
+  useEffect(() => {
+    function onDocMouse(e) {
+      if (!open) return;
+      if (!containerRef.current) return;
+      if (!containerRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", onDocMouse);
+    return () => document.removeEventListener("mousedown", onDocMouse);
+  }, [open]);
 
   // Persist draft when the in-progress fields change so navigation away/back restores state
   useEffect(() => {
@@ -86,12 +118,84 @@ export default function NewSession() {
       </header>
 
       <div className="grid gap-4">
-        <Select value={selected} onChange={(e) => setSelected(e.target.value)} className="w-full">
-          <option value="">Select problem</option>
-          {problems.map((b) => (
-            <option key={b.id} value={b.id}>{b.name} — {b.grade}</option>
-          ))}
-        </Select>
+        {/* Searchable problem picker */}
+  <div className="relative" ref={containerRef}>
+          <label className="sr-only">Select problem</label>
+          <input
+            ref={inputRef}
+            type="text"
+            value={selected ? (problems.find((p) => p.id === selected)?.name || "") : query}
+            onChange={(e) => {
+              // typing resets selected and filters
+              setSelected("");
+              setQuery(e.target.value);
+              setOpen(true);
+            }}
+            onFocus={() => setOpen(true)}
+            onKeyDown={(e) => {
+              if (e.key === "ArrowDown") {
+                e.preventDefault();
+                setActiveIndex((i) => Math.min(i + 1, filteredProblems.length - 1));
+              } else if (e.key === "ArrowUp") {
+                e.preventDefault();
+                setActiveIndex((i) => Math.max(i - 1, 0));
+              } else if (e.key === "Enter") {
+                e.preventDefault();
+                const pick = filteredProblems[activeIndex];
+                if (pick) {
+                  setSelected(pick.id);
+                  setOpen(false);
+                  setQuery("");
+                }
+              } else if (e.key === "Escape") {
+                setOpen(false);
+              }
+            }}
+            placeholder="Search problems"
+            className="w-full border rounded p-2"
+          />
+          {open && (
+            <ul
+              className="absolute z-40 left-0 right-0 max-h-52 overflow-auto mt-1"
+              style={{
+                background: "var(--surface)",
+                border: "1px solid var(--border)",
+                boxShadow: "var(--shadow-sm)",
+                borderRadius: "var(--radius-sm)",
+                padding: 4,
+              }}
+            >
+              {filteredProblems.length ? (
+                filteredProblems.map((b, i) => {
+                  const active = i === activeIndex;
+                  return (
+                    <li
+                      key={b.id}
+                      onMouseDown={(ev) => {
+                        ev.preventDefault();
+                        setSelected(b.id);
+                        setOpen(false);
+                        setQuery("");
+                      }}
+                      onMouseEnter={() => setActiveIndex(i)}
+                      style={{
+                        padding: '10px 12px',
+                        cursor: 'pointer',
+                        background: active ? 'rgba(16,185,129,0.12)' : 'transparent',
+                        color: 'var(--text)',
+                      }}
+                    >
+                      <div style={{ fontWeight: 600 }}>{b.name}</div>
+                      <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 2 }}>{b.grade}</div>
+                    </li>
+                  );
+                })
+              ) : (
+                <li style={{ padding: 10, color: 'var(--muted)' }} className="text-sm">No matches</li>
+              )}
+            </ul>
+          )}
+        </div>
         <div className="flex gap-2 items-center flex-wrap">
           <Select value={result} onChange={(e) => setResult(e.target.value)}>
             <option value="send">Send</option>
