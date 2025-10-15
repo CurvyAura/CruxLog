@@ -19,15 +19,6 @@ export default function Dashboard() {
           <h2 className="font-semibold mb-3">Progress Insights</h2>
           <InsightsChart />
         </div>
-        <div className="card p-4">
-          <h2 className="font-semibold mb-3">Recent Problems</h2>
-          <ProblemList limit={5} />
-        </div>
-      </section>
-
-      <section className="mt-6 card p-4">
-        <h2 className="font-semibold mb-3">Recent Sessions</h2>
-        <SessionList limit={5} />
       </section>
     </div>
   );

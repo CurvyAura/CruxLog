@@ -33,7 +33,8 @@ function computeSessionAverages(sessions, problemsById, gradePrefix = null) {
       if (!vals.length) return null;
       const avg = vals.reduce((sum, v) => sum + v, 0) / vals.length;
       const max = Math.max(...vals);
-      return { date: s.date, avg, max };
+      // Also return the raw numeric grades used so callers can build histograms
+      return { date: s.date, avg, max, grades: vals };
     })
     .filter((x) => x && Number.isFinite(x.avg))
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
@@ -120,9 +121,25 @@ export default function InsightsChart({ width = 600, height = 160 }) {
   }
 
   const sessionCount = filtered.length;
+  // Determine sensible grade bounds depending on grade prefix system
+  const prefixRange = gradePrefix === "V" ? { min: 0, max: 16 } : { min: 1, max: 9 };
+
+  // Build histogram counts per numeric grade for the filtered sessions
+  const gradeCounts = (() => {
+    const counts = {};
+    for (let g = prefixRange.min; g <= prefixRange.max; g++) counts[g] = 0;
+    filtered.forEach((d) => {
+      if (!d.grades || !d.grades.length) return;
+      d.grades.forEach((n) => {
+        if (n >= prefixRange.min && n <= prefixRange.max) counts[n] = (counts[n] || 0) + 1;
+      });
+    });
+    return counts;
+  })();
+  const maxCount = Math.max(...Object.values(gradeCounts));
 
   // Build simple scales with separate paddings so axis labels fit inside the viewBox
-  const leftPad = 40; // reserve space for y-axis labels
+  const leftPad = 24; // reserve space for y-axis labels (reduced to align with histogram)
   const rightPad = 12;
   const topPad = 12;
   const bottomPad = 28; // reserve space for x-axis labels
@@ -133,8 +150,6 @@ export default function InsightsChart({ width = 600, height = 160 }) {
   const avgs = filtered.map((d) => d.avg);
   const minDate = Math.min(...dates);
   const maxDate = Math.max(...dates);
-  // Determine sensible axis bounds depending on grade prefix system
-  const prefixRange = gradePrefix === "V" ? { min: 0, max: 16 } : { min: 1, max: 9 };
   const minY = Math.max(prefixRange.min, Math.floor(Math.min(...avgs) - 0.5));
   const maxY = Math.min(prefixRange.max, Math.ceil(Math.max(...avgs) + 0.5));
 
@@ -176,13 +191,13 @@ export default function InsightsChart({ width = 600, height = 160 }) {
           return (
             <g key={i}>
               <line x1={leftPad} x2={width - rightPad} y1={y} y2={y} stroke="#2b2b2b" strokeOpacity="0.12" />
-              <text x={leftPad - 8} y={y + 4} fontSize="10" fill="#9ca3af" textAnchor="end">{`${gradePrefix}${yVal}`}</text>
+              <text x={leftPad - 8} y={y} fontSize="14" fill="var(--muted)" textAnchor="end" dominantBaseline="middle">{`${gradePrefix}${yVal}`}</text>
             </g>
           );
         })}
 
-        {/* polyline */}
-        <polyline fill="none" stroke="#10b981" strokeWidth="2" points={points} strokeLinecap="round" strokeLinejoin="round" />
+  {/* polyline */}
+  <polyline fill="none" stroke="var(--primary)" strokeWidth="2" points={points} strokeLinecap="round" strokeLinejoin="round" />
 
         {/* points */}
 
@@ -192,7 +207,7 @@ export default function InsightsChart({ width = 600, height = 160 }) {
             cx={xFor(new Date(d.date).getTime())}
             cy={yFor(d.avg)}
             r={4}
-            fill="#10b981"
+            fill="var(--primary)"
             style={{ cursor: "pointer" }}
             onClick={(e) => {
               e.stopPropagation();
@@ -227,9 +242,27 @@ export default function InsightsChart({ width = 600, height = 160 }) {
           );
         })()}
       </svg>
-      <div className="mt-2 text-xs text-muted-foreground">
-        <span className="font-medium">Avg grade</span> over time ({`${gradePrefix}${prefixRange.min} low → ${gradePrefix}${prefixRange.max} high`})
+
+      {/* Histogram: counts per numeric grade */}
+      <div className="mt-3 grid grid-cols-1 gap-1">
+        {Object.keys(gradeCounts)
+          .map((k) => Number(k))
+          .sort((a, b) => a - b)
+          .map((g) => {
+            const cnt = gradeCounts[g] || 0;
+            const pct = maxCount ? Math.round((cnt / maxCount) * 100) : 0;
+            return (
+              <div key={g} className="flex items-center gap-3 text-sm">
+                <div className="w-12" style={{ color: "var(--muted)" }}>{`${gradePrefix}${g}`}</div>
+                  <div className="flex-1 flex items-center bg-transparent">
+                    <div style={{ width: `${pct}%`, background: "var(--primary)" }} className="h-3 rounded" />
+                  </div>
+                  <div className="w-8 text-right" style={{ color: "var(--muted)", lineHeight: "1" }}>{cnt}</div>
+              </div>
+            );
+          })}
       </div>
+      
     </div>
   );
 }
