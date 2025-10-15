@@ -172,7 +172,7 @@ export default function NewSession() {
         const newLevelObj = getLevelForXP(newXp);
         try {
           ensureToastRoot();
-          showToast(`LEVEL UP! You're now a ${newLevelObj.name || 'Level ' + newLevelObj.lvl} ${newLevelObj.emoji || ''}`);
+          showToast(`LEVEL UP! You're now ${newLevelObj.name || 'Level ' + newLevelObj.lvl} ${newLevelObj.emoji || ''}`);
         } catch (e) {}
       }
 
