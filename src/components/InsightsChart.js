@@ -245,22 +245,23 @@ export default function InsightsChart({ width = 600, height = 160 }) {
 
       {/* Histogram: counts per numeric grade */}
       <div className="mt-3 grid grid-cols-1 gap-1">
-        {Object.keys(gradeCounts)
-          .map((k) => Number(k))
-          .sort((a, b) => a - b)
-          .map((g) => {
+        {(() => {
+          const visible = Object.keys(gradeCounts).map((k) => Number(k)).filter((g) => (gradeCounts[g] || 0) > 0).sort((a, b) => a - b);
+          if (!visible.length) return <p className="text-sm text-muted-foreground">No completed grades in this range.</p>;
+          return visible.map((g) => {
             const cnt = gradeCounts[g] || 0;
             const pct = maxCount ? Math.round((cnt / maxCount) * 100) : 0;
             return (
               <div key={g} className="flex items-center gap-3 text-sm">
                 <div className="w-12" style={{ color: "var(--muted)" }}>{`${gradePrefix}${g}`}</div>
-                  <div className="flex-1 flex items-center bg-transparent">
-                    <div style={{ width: `${pct}%`, background: "var(--primary)" }} className="h-3 rounded" />
-                  </div>
-                  <div className="w-8 text-right" style={{ color: "var(--muted)", lineHeight: "1" }}>{cnt}</div>
+                <div className="flex-1 flex items-center bg-transparent">
+                  <div style={{ width: `${pct}%`, background: "var(--primary)" }} className="h-3 rounded" />
+                </div>
+                <div className="w-8 text-right" style={{ color: "var(--muted)", lineHeight: "1" }}>{cnt}</div>
               </div>
             );
-          })}
+          });
+        })()}
       </div>
       
     </div>

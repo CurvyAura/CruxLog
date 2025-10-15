@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { getAll, save, put } from "../../../lib/storage";
+import { getAll, save, put, getSetting, setSetting } from "../../../lib/storage";
 import Select from "../../../components/ui/Select";
 import { makeSession, makeAttempt } from "../../../lib/schema";
 import { useRouter } from "next/navigation";
@@ -33,8 +33,24 @@ export default function NewSession() {
         setGradePrefix(v || "C");
       });
     });
+    // load draft session if present
+    let mountedDraft = true;
+    getSetting("draftSession", null).then((draft) => {
+      if (!mountedDraft || !draft) return;
+      if (draft.selected) setSelected(draft.selected);
+      if (draft.result) setResult(draft.result);
+      if (Array.isArray(draft.attempts) && draft.attempts.length) setAttempts(draft.attempts);
+    });
     return () => (mounted = false);
   }, []);
+
+  // Persist draft when the in-progress fields change so navigation away/back restores state
+  useEffect(() => {
+    // Save a minimal draft object
+    const draft = { selected, result, attempts };
+    // store under settings so it's persisted via localforage
+    setSetting("draftSession", draft).catch(() => {});
+  }, [selected, result, attempts]);
 
   function addAttempt() {
     if (!selected) return;
@@ -54,7 +70,9 @@ export default function NewSession() {
     );
 
     await save("sessions", s);
-    setAttempts([]);
+  // clear draft before resetting in-memory attempts
+  await setSetting("draftSession", null);
+  setAttempts([]);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
     // navigate back to dashboard so user sees the saved session
