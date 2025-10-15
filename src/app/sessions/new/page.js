@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { getAll, save } from "../../../lib/storage";
+import { getAll, save, put } from "../../../lib/storage";
 import Select from "../../../components/ui/Select";
 import { makeSession, makeAttempt } from "../../../lib/schema";
 import { useRouter } from "next/navigation";
@@ -44,6 +44,15 @@ export default function NewSession() {
 
   async function saveSession() {
     const s = makeSession({ attempts });
+    // For any attempt that is a 'send', mark the referenced problem as completed
+    // with the session date.
+    const sessionDate = s.date;
+    await Promise.all(
+      s.attempts
+        .filter((a) => a.result === "send")
+        .map((a) => put("problems", a.problemId, { completedDate: sessionDate }))
+    );
+
     await save("sessions", s);
     setAttempts([]);
     setSaved(true);

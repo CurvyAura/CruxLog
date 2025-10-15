@@ -6,6 +6,16 @@ import ConfirmDialog from "./ConfirmDialog";
 import Button from "./ui/Button";
 import Input from "./ui/Input";
 
+// Helper: format an ISO datetime into a local YYYY-MM-DD string for date inputs.
+function formatLocalDate(iso) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
+}
+
 /**
  * ProblemList
  * - Displays saved problems.
@@ -127,12 +137,18 @@ export default function ProblemList({ limit = null, refreshKey = null }) {
                       <label className="sr-only">Completed date</label>
                       <input
                         type="date"
-                        value={new Date(p.completedDate).toISOString().slice(0, 10)}
+                        value={formatLocalDate(p.completedDate)}
                         onClick={(e) => e.stopPropagation()}
                         onChange={async (e) => {
                           e.stopPropagation();
-                          const val = e.target.value;
-                          const iso = val ? new Date(val).toISOString() : null;
+                          const val = e.target.value; // YYYY-MM-DD
+                          let iso = null;
+                          if (val) {
+                            const [y, m, d] = val.split("-").map((n) => Number(n));
+                            // construct a local date at midnight so we store the intended local day
+                            const local = new Date(y, m - 1, d);
+                            iso = local.toISOString();
+                          }
                           await put("problems", p.id, { completedDate: iso });
                           setProblems((s) => s.map((x) => (x.id === p.id ? { ...x, completedDate: iso } : x)));
                         }}

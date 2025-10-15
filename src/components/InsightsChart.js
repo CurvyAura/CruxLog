@@ -19,7 +19,9 @@ function gradeToNumber(g) {
 function computeSessionAverages(sessions, problemsById, gradePrefix = null) {
   return sessions
     .map((s) => {
+      // Only consider attempts that resulted in a send (completed)
       const vals = (s.attempts || [])
+        .filter((a) => a.result === "send")
         .map((a) => {
           const p = problemsById[a.problemId];
           // If a gradePrefix is specified, only consider problems matching that prefix

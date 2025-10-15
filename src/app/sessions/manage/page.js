@@ -37,7 +37,25 @@ export default function ManageSessions() {
     const session = sessions.find((s) => s.id === sessionId);
     if (!session) return;
     const attempts = session.attempts.map((a) => (a.id === attemptId ? { ...a, result: a.result === "send" ? "fail" : "send" } : a));
+
+    // Persist the updated attempts on the session
     await put("sessions", sessionId, { attempts });
+
+    // Also update the related problem's completedDate when toggling to 'send',
+    // or clear it when toggling away from 'send'.
+    const changed = attempts.find((a) => a.id === attemptId);
+    if (changed) {
+      const probId = changed.problemId;
+      const newResult = changed.result;
+      if (newResult === "send") {
+        // set completedDate to the session date
+        await put("problems", probId, { completedDate: session.date });
+      } else {
+        // clear completedDate
+        await put("problems", probId, { completedDate: null });
+      }
+    }
+
     setSessions((s) => s.map((x) => (x.id === sessionId ? { ...x, attempts } : x)));
   }
 
