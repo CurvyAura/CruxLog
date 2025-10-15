@@ -139,7 +139,7 @@ export default function InsightsChart({ width = 600, height = 160 }) {
   const maxCount = Math.max(...Object.values(gradeCounts));
 
   // Build simple scales with separate paddings so axis labels fit inside the viewBox
-  const leftPad = 24; // reserve space for y-axis labels (reduced to align with histogram)
+  const leftPad = 25; // reserve space for y-axis labels (reduced to align with histogram)
   const rightPad = 12;
   const topPad = 12;
   const bottomPad = 28; // reserve space for x-axis labels
