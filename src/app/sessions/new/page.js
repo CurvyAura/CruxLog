@@ -158,12 +158,15 @@ export default function NewSession() {
             <ul
               className="absolute z-40 left-0 right-0 max-h-52 overflow-auto mt-1"
               style={{
-                background: "var(--surface)",
-                border: "1px solid var(--border)",
-                boxShadow: "var(--shadow-sm)",
-                borderRadius: "var(--radius-sm)",
-                padding: 4,
-              }}
+                  background: "var(--surface)",
+                  border: "1px solid var(--border)",
+                  boxShadow: "var(--shadow-sm)",
+                  borderRadius: "var(--radius-sm)",
+                  padding: 4,
+                  maxWidth: 'calc(100vw - 24px)',
+                  boxSizing: 'border-box',
+                  overflowX: 'hidden',
+                }}
             >
               {filteredProblems.length ? (
                 filteredProblems.map((b, i) => {
@@ -179,13 +182,15 @@ export default function NewSession() {
                       }}
                       onMouseEnter={() => setActiveIndex(i)}
                       style={{
-                        padding: '10px 12px',
-                        cursor: 'pointer',
-                        background: active ? 'rgba(16,185,129,0.12)' : 'transparent',
-                        color: 'var(--text)',
-                      }}
+                          padding: '10px 12px',
+                          cursor: 'pointer',
+                          background: active ? 'rgba(16,185,129,0.12)' : 'transparent',
+                          color: 'var(--text)',
+                          whiteSpace: 'normal',
+                          wordBreak: 'break-word',
+                        }}
                     >
-                      <div style={{ fontWeight: 600 }}>{b.name}</div>
+                      <div style={{ fontWeight: 600, wordBreak: 'break-word' }}>{b.name}</div>
                       <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 2 }}>{b.grade}</div>
                     </li>
                   );
@@ -214,16 +219,17 @@ export default function NewSession() {
             {attempts.map((a, idx) => {
               const p = problems.find((b) => b.id === a.problemId);
               return (
-                <li key={a.id} className="p-2 border rounded flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="min-w-40">
-                      <div className="font-semibold">
-                        {p ? p.name : a.problemId} {p && <span className="text-sm text-muted-foreground">({p.grade})</span>}
-                      </div>
+                <li key={a.id} className="p-2 border rounded">
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="font-semibold flex-1 min-w-0 truncate" title={p ? p.name : a.problemId}>
+                      {p ? p.name : a.problemId}
+                      {p && <span className="text-sm text-muted-foreground"> ({p.grade})</span>}
+                    </span>
+                    <div className="ml-3 flex-shrink-0 w-16 flex justify-end">
+                      <ResultBadge result={a.result} />
                     </div>
-                    <ResultBadge result={a.result} />
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 mt-2 md:mt-0">
                     <Select
                       value={a.result}
                       onChange={(e) => {
