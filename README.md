@@ -1,54 +1,36 @@
 🪶 CruxLog
 
-CruxLog is a modern web app built with Next.js and React for tracking, journaling, and organizing your personal climbing sessions or daily logs.
-It’s designed for simplicity, performance, and a clean user experience.
+    CruxLog is a modern web app built with Next.js and React for tracking your personal climbing sessions.
+    It’s designed for simplicity, performance, and a clean user experience!
 
 🚀 Features
 
-🧗‍♂️ Log climbing sessions and track your progress
+    🧗‍♂️ Log climbing sessions and track your progress with graphs!
 
-📝 Create, edit, and delete personal entries
-
-☁️ Built with Next.js for fast loading and modern routing
-
-🎨 Styled with Tailwind CSS for responsive design
+    📝 Create, edit, and delete personal entries!
 
 🧰 Tech Stack
 
-Framework: Next.js 15
+    Framework: Next.js 15
 
-Frontend: React, TypeScript
+    Frontend: React, TypeScript
 
-Styling: Tailwind CSS
+    Styling: Tailwind CSS
 
-Deployment: Vercel
+    Deployment: Vercel
 
-Version Control: Git + GitHub
+    Version Control: Git + GitHub
 
 🧑‍💻 Getting Started
 
-1. Visit the link under About!
-
-Then visit:
-👉 http://localhost:3000
-
-📦 Build for Production
-npm run build
-npm start
-
-📁 Project Structure
-crux-log/
-├── app/ # Next.js App Router pages
-├── components/ # UI components
-├── public/ # Static files (images, icons, etc.)
-├── styles/ # Tailwind and global styles
-└── package.json # Dependencies and scripts
+    1. Visit the link under About!
 
 🧑‍🎨 Author
 
-Brett Shalagan
+    Brett Shalagan
 
 🪶 License
 
-This project is licensed under the MIT License
+    This project is licensed under the MIT License
+
 .
