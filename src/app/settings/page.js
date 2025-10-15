@@ -41,8 +41,12 @@ export default function SettingsPage() {
           onChange={(e) => setTheme(e.target.value)}
           className="mt-1 border rounded p-2"
         >
-          <option value="light">Light</option>
-          <option value="dark">Dark</option>
+          <option value="light">Light — Default</option>
+          <option value="woody">Light — Woody</option>
+          <option value="dark">Dark — Default</option>
+          <option value="dark-ink">Dark — Ink</option>
+          <option value="dark-emerald">Dark — Emerald</option>
+          <option value="neon">Accent — Neon</option>
         </select>
       </div>
 

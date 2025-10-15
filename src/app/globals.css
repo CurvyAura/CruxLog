@@ -38,6 +38,70 @@ html[data-theme="dark"] {
   --border: #15202b;
 }
 
+/* Woody (light) theme: warm, timber/olive accents */
+html[data-theme="woody"] {
+  --bg: #f8f3ec; /* warm paper */
+  --surface: #fffaf5; /* slightly warmer card */
+  --muted: #7a6a56; /* neutral brown-muted */
+  --text: #2b2318; /* deep brown text for warmth */
+  --primary: #6b8b3b; /* olive/forest green */
+  --primary-contrast: #ffffff;
+  --danger: #b00020;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --shadow-sm: 0 1px 2px rgba(43,35,24,0.04);
+  --shadow-md: 0 6px 12px rgba(43,35,24,0.06);
+  --border: #efe6da;
+}
+
+/* Dark variant: ink — very deep background with warm amber accent */
+html[data-theme="dark-ink"] {
+  --bg: #02040a; /* near-black */
+  --surface: #071124; /* deep navy/ink */
+  --muted: #93a1b2;
+  --text: #eef6ff;
+  --primary: #f59e0b; /* amber accent */
+  --primary-contrast: #061018;
+  --danger: #ff6b6b;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.6);
+  --shadow-md: 0 6px 12px rgba(0,0,0,0.6);
+  --border: #071823;
+}
+
+/* Dark variant: emerald — deep teal background with green accents */
+html[data-theme="dark-emerald"] {
+  --bg: #041114; /* very dark teal */
+  --surface: #07201a; /* slightly lighter surface */
+  --muted: #8aa9a3;
+  --text: #e8fbf3;
+  --primary: #18a673; /* emerald/green */
+  --primary-contrast: #041a14;
+  --danger: #ff6b6b;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --shadow-sm: 0 1px 2px rgba(2,6,4,0.6);
+  --shadow-md: 0 6px 12px rgba(2,6,4,0.6);
+  --border: #08302a;
+}
+
+/* Neon accent theme: dark background with bright neon accents */
+html[data-theme="neon"] {
+  --bg: #0a0b0d;
+  --surface: #0f0f11;
+  --muted: #9aa3b2;
+  --text: #eaf6ff;
+  --primary: #00e5ff; /* cyan neon */
+  --primary-contrast: #001216;
+  --danger: #ff4d6d;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.6);
+  --shadow-md: 0 6px 12px rgba(0,0,0,0.6);
+  --border: #092026;
+}
+
 /* prefers-color-scheme handled via ThemeProvider/data-theme; keep media rule out to avoid empty rules */
 
 body {
