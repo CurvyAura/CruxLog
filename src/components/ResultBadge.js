@@ -4,6 +4,6 @@ import Badge from "./ui/Badge";
 
 export default function ResultBadge({ result }) {
   if (result === "send") return <Badge tone="success">Send</Badge>;
-  if (result === "fail") return <Badge tone="danger">Fail</Badge>;
+  // any non-send result is treated as an Attempt
   return <Badge tone="muted">Attempt</Badge>;
 }

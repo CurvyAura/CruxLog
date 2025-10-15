@@ -5,6 +5,7 @@ import ProblemForm from "../../components/ProblemForm";
 import ProblemList from "../../components/ProblemList";
 import SessionList from "../../components/SessionList";
 import InsightsChart from "../../components/InsightsChart";
+import LevelCard from "../../components/LevelCard";
 
 /**
  * Dashboard: add problems and view recent sessions.
@@ -18,6 +19,10 @@ export default function Dashboard() {
         <div className="card p-4 lg:col-span-2">
           <h2 className="font-semibold mb-3">Progress Insights</h2>
           <InsightsChart />
+        </div>
+
+        <div>
+          <LevelCard />
         </div>
       </section>
     </div>

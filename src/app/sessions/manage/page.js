@@ -32,11 +32,11 @@ export default function ManageSessions() {
     setConfirmDelete({ open: false, sessionId: null });
   }
 
-  // Toggle between 'send' and 'fail' for an attempt and persist the session.
+  // Toggle between 'send' and 'attempt' for an attempt and persist the session.
   async function toggleAttemptResult(sessionId, attemptId) {
     const session = sessions.find((s) => s.id === sessionId);
     if (!session) return;
-    const attempts = session.attempts.map((a) => (a.id === attemptId ? { ...a, result: a.result === "send" ? "fail" : "send" } : a));
+    const attempts = session.attempts.map((a) => (a.id === attemptId ? { ...a, result: a.result === "send" ? "attempt" : "send" } : a));
 
     // Persist the updated attempts on the session
     await put("sessions", sessionId, { attempts });
