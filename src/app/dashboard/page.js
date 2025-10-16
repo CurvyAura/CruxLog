@@ -6,6 +6,7 @@ import ProblemList from "../../components/ProblemList";
 import SessionList from "../../components/SessionList";
 import InsightsChart from "../../components/InsightsChart";
 import LevelCard from "../../components/LevelCard";
+import AchievementList from "../../components/AchievementList";
 
 /**
  * Dashboard: add problems and view recent sessions.
@@ -23,6 +24,8 @@ export default function Dashboard() {
 
         <div>
           <LevelCard />
+          {/* Achievements are shown below the Level card; debug flag left off in production */}
+          <AchievementList />
         </div>
       </section>
     </div>

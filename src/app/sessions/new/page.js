@@ -184,7 +184,69 @@ export default function NewSession() {
           .map((a) => put("problems", a.problemId, { completedDate: sessionDate }))
       );
 
+      // persist the session
       await save("sessions", s);
+
+      // ACHIEVEMENTS: evaluate this session and award any new achievements
+      try {
+  const { evaluateSessionAchievements, findAchievement } = await import("../../../lib/achievements");
+        const { getAll: getAllStorage, getSetting: getSettingStorage, setSetting: setSettingStorage } = await import("../../../lib/storage");
+
+        const allProblems = await getAllStorage("problems");
+        const pastSessions = await getAllStorage("sessions");
+        // exclude the session we just saved (it should be the last item)
+        const past = pastSessions.filter((ss) => ss.id !== s.id);
+
+        // compute previous PB (numeric grade) before this session
+        function gradeNumberLocal(g) {
+          if (!g) return 0;
+          const m = String(g).match(/(\d+)/);
+          return m ? parseInt(m[0], 10) : 0;
+        }
+        let prevPB = 0;
+        for (const p of allProblems) {
+          if (!p.completedDate) continue;
+          const gn = gradeNumberLocal(p.grade);
+          if (gn > prevPB) prevPB = gn;
+        }
+
+        const currentXpAfterSession = Number(await getSettingStorage("xp", 0)) || 0;
+
+  const toUnlock = evaluateSessionAchievements({ session: s, problems: allProblems, pastSessions: past, prevPB, currentXp: currentXpAfterSession });
+  // temporal/streak-based achievements (consistency, weekend, monthly, yearly)
+  const { evaluateTemporalAchievements } = await import('../../../lib/achievements');
+  const temporal = evaluateTemporalAchievements({ session: s, pastSessions: past, currentXp: currentXpAfterSession });
+  const allToUnlock = Array.from(new Set([...(toUnlock || []), ...(temporal || [])]));
+
+        // load unlocked set and filter out already unlocked
+  const unlockedNow = Array.isArray(await getSettingStorage("achievementsUnlocked", [])) ? await getSettingStorage("achievementsUnlocked", []) : [];
+  const newIds = (allToUnlock || []).filter((id) => !unlockedNow.includes(id));
+        if (newIds.length) {
+          const updated = [...unlockedNow, ...newIds];
+          await setSettingStorage("achievementsUnlocked", updated);
+
+          // Award XP and show toast for each achievement
+          let awardedTotal = 0;
+          for (const id of newIds) {
+            const ach = findAchievement(id);
+            if (!ach) continue;
+            awardedTotal += ach.xp || 0;
+            try {
+              ensureToastRoot();
+              showToast(`Achievement unlocked: ${ach.name} ${ach.emoji} (+${ach.xp} XP)`);
+            } catch (e) {}
+          }
+
+          if (awardedTotal > 0) {
+            const prevXpVal = Number(await getSettingStorage("xp", 0)) || 0;
+            await setSettingStorage("xp", prevXpVal + awardedTotal);
+          }
+          try { window.dispatchEvent(new CustomEvent('cruxlog:achievements:updated')); } catch(e) {}
+        }
+      } catch (e) {
+        // don't block the save flow on achievement errors
+        console.error('Achievement evaluation failed', e);
+      }
       // clear draft before resetting in-memory attempts
       await setSetting("draftSession", null);
       setAttempts([]);

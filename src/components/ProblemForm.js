@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { save } from "../lib/storage";
+import { save, getAll, getSetting, setSetting } from "../lib/storage";
+import { findAchievement } from "../lib/achievements";
+import { ensureToastRoot, showToast } from "./ToastPortal";
 import { makeProblem } from "../lib/schema";
 import Input from "./ui/Input";
 import Button from "./ui/Button";
@@ -31,6 +33,18 @@ export default function ProblemForm({ onSaved }) {
   // Submit handler: create a Problem object and persist it using the storage helper.
   async function submit(e) {
     e.preventDefault();
+    // load existing problems to determine whether this is the first logged problem
+    // and whether the area is new
+    let existing = [];
+    try {
+      existing = await getAll("problems");
+    } catch (err) {
+      existing = [];
+    }
+
+    const prevCount = existing.length;
+    const existingAreas = new Set(existing.map((x) => (x.area || "").trim()).filter(Boolean));
+
     const p = makeProblem({ name, grade, area, completedDate });
     await save("problems", p);
     // Reset form fields
@@ -44,6 +58,37 @@ export default function ProblemForm({ onSaved }) {
       window.dispatchEvent(new CustomEvent("cruxlog:problems:updated", { detail: p }));
     } catch (err) {
       // ignore (server-side rendering won't have window)
+    }
+
+    // Achievements: check for First Grip and New Territory when creating a problem
+    try {
+      const unlockedNow = Array.isArray(await getSetting("achievementsUnlocked", [])) ? await getSetting("achievementsUnlocked", []) : [];
+      const toAdd = [];
+      if (prevCount === 0 && !unlockedNow.includes('first-grip')) toAdd.push('first-grip');
+      if ((area || '').trim() && !existingAreas.has((area || '').trim()) && !unlockedNow.includes('new-territory')) toAdd.push('new-territory');
+
+      if (toAdd.length) {
+        const updated = [...unlockedNow, ...toAdd];
+        await setSetting("achievementsUnlocked", updated);
+
+        // award xp for each achievement and show toast
+        let awarded = 0;
+        for (const id of toAdd) {
+          const ach = findAchievement(id);
+          if (!ach) continue;
+          awarded += ach.xp || 0;
+          try { ensureToastRoot(); showToast(`Achievement unlocked: ${ach.name} ${ach.emoji} (+${ach.xp} XP)`); } catch (e) {}
+        }
+        if (awarded > 0) {
+          const prevXp = Number(await getSetting('xp', 0)) || 0;
+          await setSetting('xp', prevXp + awarded);
+        }
+
+        try { window.dispatchEvent(new CustomEvent('cruxlog:achievements:updated')); } catch (e) {}
+      }
+    } catch (err) {
+      // don't fail creation if achievements handling has an error
+      console.error('Error awarding achievements on problem save', err);
     }
   }
 
