@@ -177,12 +177,20 @@ export default function NewSession() {
       }
 
       // Now mark problems completed for send attempts with the session date.
+      // Do sequential updates to avoid a race where parallel `put` calls read
+      // the same base snapshot and overwrite each other's changes. Updating
+      // one-by-one ensures all completedDate values persist.
       const sessionDate = s.date;
-      await Promise.all(
-        s.attempts
-          .filter((a) => a.result === "send")
-          .map((a) => put("problems", a.problemId, { completedDate: sessionDate }))
-      );
+      const sends = s.attempts.filter((a) => a.result === "send");
+      for (const a of sends) {
+        try {
+          // put will merge the patch into the matching problem by id
+          await put("problems", a.problemId, { completedDate: sessionDate });
+        } catch (err) {
+          // don't block the save flow if a single problem update fails
+          console.error("Failed to mark problem completed:", a.problemId, err);
+        }
+      }
 
       // persist the session
       await save("sessions", s);
