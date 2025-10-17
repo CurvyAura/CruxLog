@@ -37,6 +37,14 @@ export async function getSetting(name, defaultValue = null) {
 }
 
 /**
+ * Return the entire settings object stored under the 'settings' key.
+ */
+export async function getAllSettings() {
+  const map = (await localforage.getItem(key("settings"))) || {};
+  return map;
+}
+
+/**
  * Persist a single app setting under the 'settings' key.
  * @param {string} name
  * @param {any} value

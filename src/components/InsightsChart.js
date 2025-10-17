@@ -171,15 +171,11 @@ export default function InsightsChart({ width = 600, height = 160 }) {
     <div>
       <div className="flex items-center justify-between gap-2 mb-2">
         <div className="flex gap-2">
-          {["7d", "30d", "1y", "all"].map((r) => (
-            <button
-              key={r}
-              onClick={() => setRange(r)}
-              className={`px-2 py-1 text-xs rounded ${range === r ? "bg-gray-800 text-white" : "bg-transparent text-muted-foreground border"}`}
-            >
-              {r === "7d" ? "Last 7d" : r === "30d" ? "Last 30d" : r === "1y" ? "Last year" : "All"}
-            </button>
-          ))}
+            {["7d", "30d", "1y", "all"].map((r) => (
+              <Button key={r} className="text-xs px-2 py-1" variant={range === r ? "default" : "ghost"} onClick={() => setRange(r)}>
+                {r === "7d" ? "Last 7d" : r === "30d" ? "Last 30d" : r === "1y" ? "Last year" : "All"}
+              </Button>
+            ))}
         </div>
         <div className="text-sm text-muted-foreground">Sessions: {sessionCount} • Highest: {highestDisplay}</div>
       </div>

@@ -84,7 +84,7 @@ export default function AchievementList({ showDebug = false }) {
                   <div className="text-right">
                     <div className="text-sm">{isUnlocked(a.id) ? `+${a.xp} XP` : ''}</div>
                     {showDebug && !isUnlocked(a.id) ? (
-                      <button className="text-xs mt-1 text-link" onClick={() => unlock(a.id)}>Unlock</button>
+                      <button className="btn-link text-xs mt-1" onClick={() => unlock(a.id)}>Unlock</button>
                     ) : null}
                   </div>
                 </div>
@@ -95,7 +95,7 @@ export default function AchievementList({ showDebug = false }) {
       </div>
 
       {showDebug ? (
-        <div className="mt-3 text-xs text-muted">Debug: <button className="text-link" onClick={unlockAll}>Unlock all</button></div>
+        <div className="mt-3 text-xs text-muted">Debug: <button className="btn-link" onClick={unlockAll}>Unlock all</button></div>
       ) : null}
     </div>
   );

@@ -236,6 +236,26 @@ select option:disabled { color: var(--muted); }
 .btn-ghost:hover { background: rgba(0,0,0,0.02); }
 .btn-destructive:hover { opacity: 0.92; transform: translateY(-2px); }
 
+/* Link-style buttons used for small inline actions */
+.btn-link {
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  padding: 0;
+  font-weight: 600;
+}
+.btn-link:hover { text-decoration: underline; }
+
+.text-link { color: var(--primary); cursor: pointer; }
+.text-link:hover { text-decoration: underline; }
+
+/* Small button variant for compact controls */
+.btn-sm {
+  min-height: 32px;
+  padding: 6px 10px; /* slightly smaller than default */
+  font-size: 13px;
+}
+
 /* subtle entrance and dialog animations */
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes scaleIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }

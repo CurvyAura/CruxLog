@@ -123,7 +123,7 @@ export default function SessionList({ limit = null }) {
                 ) : (
                   <button
                     type="button"
-                    className="text-left"
+                    className="btn-link text-left"
                     onClick={(e) => {
                       e.stopPropagation();
                       // Prefill datetime-local value
