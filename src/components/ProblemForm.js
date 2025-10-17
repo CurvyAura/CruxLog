@@ -16,7 +16,6 @@ export default function ProblemForm({ onSaved }) {
   const [name, setName] = useState("");
   const [grade, setGrade] = useState("");
   const [area, setArea] = useState("");
-  const [completedDate, setCompletedDate] = useState("");
   const [gradePrefix, setGradePrefix] = useState("C");
 
   useEffect(() => {
@@ -45,13 +44,12 @@ export default function ProblemForm({ onSaved }) {
     const prevCount = existing.length;
     const existingAreas = new Set(existing.map((x) => (x.area || "").trim()).filter(Boolean));
 
-    const p = makeProblem({ name, grade, area, completedDate });
+  const p = makeProblem({ name, grade, area });
     await save("problems", p);
     // Reset form fields
     setName("");
     setGrade("");
-    setArea("");
-    setCompletedDate("");
+  setArea("");
     if (onSaved) onSaved(p);
     // Broadcast a global event so lists across pages can refresh immediately
     try {
@@ -96,8 +94,7 @@ export default function ProblemForm({ onSaved }) {
     <form onSubmit={submit} className="grid gap-2">
       <Input placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
       <Input placeholder={`Grade (${gradePrefix}1 - ${gradePrefix}9)`} value={grade} onChange={(e) => setGrade(e.target.value)} />
-      <Input placeholder="Area / Gym" value={area} onChange={(e) => setArea(e.target.value)} />
-      <Input type="date" value={completedDate} onChange={(e) => setCompletedDate(e.target.value)} aria-label="Completed date" />
+  <Input placeholder="Area / Gym" value={area} onChange={(e) => setArea(e.target.value)} />
       <div className="flex gap-2">
         <Button>Add Problem</Button>
       </div>

@@ -54,7 +54,7 @@ export default function RootLayout({ children }) {
           <main className="flex-1 max-w-6xl mx-auto px-4 py-8">{children}</main>
 
           <footer className="border-t">
-            <div className="max-w-6xl mx-auto px-4 py-3 text-sm text-center text-muted-foreground">CruxLog — Local prototype</div>
+            <div className="max-w-6xl mx-auto px-4 py-3 text-sm text-center text-muted-foreground">CruxLog</div>
           </footer>
           </div>
         </ThemeProviderWrapper>

@@ -6,7 +6,7 @@ export default function Home() {
     <div className="max-w-4xl mx-auto py-20 px-4">
       <section className="text-center mb-10">
         <h1 className="text-5xl font-extrabold mb-3">CruxLog</h1>
-        <p className="text-lg text-muted mb-6">Track your climbing progress with simple, local-first tools.</p>
+        <p className="text-lg text-muted mb-6">Track your climbing progress.</p>
         <div className="flex justify-center gap-4">
           <Link href="/dashboard"><Button>Open Dashboard</Button></Link>
           <Link href="/problems"><Button variant="ghost">View Problems</Button></Link>
